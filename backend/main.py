@@ -28,3 +28,7 @@ def create_report(report: schemas.ReportCreate, db: Session = Depends(get_db)):
     db.refresh(new_report)
 
     return new_report
+
+@app.get("/reports")
+def get_reports(db: Session = Depends(get_db)):
+    return db.query(models.Report).all()
