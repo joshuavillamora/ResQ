@@ -32,3 +32,24 @@ def create_report(report: schemas.ReportCreate, db: Session = Depends(get_db)):
 @app.get("/reports")
 def get_reports(db: Session = Depends(get_db)):
     return db.query(models.Report).all()
+
+@app.post("/sms")
+def parse_sms(sms: str, db: Session = Depends(get_db)):
+    parts = sms.split("|")
+    if len(parts) != 6:
+        return {"error": "Invalid SMS"}
+    disaster_type, user_id, lat, lng, municipality, barangay = parts
+    new_report = models.Report(
+        user_id=user_id,
+        disaster_type=disaster_type,
+        latitude=float(lat),
+        longitude=float(lng),
+        municipality=municipality,
+        barangay=barangay
+    )
+
+    db.add(new_report)
+    db.commit()
+    db.refresh(new_report)
+
+    return new_report
