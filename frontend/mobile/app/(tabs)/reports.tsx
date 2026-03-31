@@ -1,11 +1,17 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { ImageBackground, Text, View } from 'react-native'
 
 const reports = () => {
   return (
-    <View>
-      <Text>reports</Text>
-    </View>
+    <ImageBackground
+      source={require('@/assets/images/bg.png')}
+      style={{ flex: 1 }}
+      resizeMode='cover'
+    >
+      <View>
+        <Text>reports</Text>
+      </View>
+    </ImageBackground>
   )
 }
 

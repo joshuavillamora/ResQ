@@ -1,13 +1,14 @@
 import { createHomeStyles } from "@/assets/styles/home.style";
 import Header from "@/components/Header";
+import useDrawer from "@/hooks/UseDrawer";
 import useTheme from "@/hooks/UseTheme";
-import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import { Text, TouchableOpacity, View, Image, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
-  const {toggleDarkMode,colors} = useTheme();
+  const { colors } = useTheme();
+  const { menuOpen, toggleMenu } = useDrawer();
   const Homestyle = createHomeStyles(colors);
 
   const buttons = [
@@ -27,16 +28,17 @@ export default function Index() {
     <ImageBackground
       source={require('@/assets/images/bg.png')}
       style={{flex: 1}}
-      resizeMode="center"
+      resizeMode='cover'
     >
       <SafeAreaView style={Homestyle.safeArea}>
-        <Header />
+        <Header menuOpen={menuOpen} onMenuToggle={toggleMenu} />
         <View style={Homestyle.infoBar}>
           <TouchableOpacity style={Homestyle.infoCircleButton} activeOpacity={0.85}>
             <Text style={Homestyle.infoCircleButtonText}>SOS</Text>
           </TouchableOpacity>
-          <Text style={Homestyle.infoBarTitle}></Text>
-          <Text style={Homestyle.infoBarSubtitle}></Text>
+          <Text style={Homestyle.infoBarTitle}>Hello</Text>
+          <Text style={Homestyle.infoBarSubtitle}>I&apos;m zneb
+          </Text>
         </View>
         <View style={Homestyle.disasterGridContainer}>
             <View style={Homestyle.disasterGrid}>
