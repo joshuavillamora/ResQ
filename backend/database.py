@@ -1,17 +1,27 @@
+import os
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Neon Postgres connection string
-DATABASE_URL = "postgresql+psycopg://neondb_owner:npg_Ho4TdQghGW3K@ep-dawn-cherry-a1plwd6y-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+# Get database URL from env variables.
+# Supports either DATABASE_URL or NEON_DATABASE_URL for cloud DB.
+DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("NEON_DATABASE_URL")
 
-# Create SQLAlchemy engine
-engine = create_engine(DATABASE_URL)
+# Fallback to local SQLite database if no env variable is set.
+if not DATABASE_URL:
+    DATABASE_URL = "sqlite:///./resq.db"
 
-# Session for queries
-SessionLocal = sessionmaker(bind=engine)
+engine_options = {}
+if DATABASE_URL.startswith("sqlite"):
+    engine_options["connect_args"] = {"check_same_thread": False}
 
-# Base class for models
+engine = create_engine(DATABASE_URL, **engine_options)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False, 
+    bind=engine)
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()
