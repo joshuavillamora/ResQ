@@ -163,12 +163,23 @@ export const createHomeStyles = (colors: ColorScheme) => {
       justifyContent: 'center',
     },
     disasterButton: {
-      width: '45%',
-      height: '50%',
-      aspectRatio: 1,
+      width: 150,
+      height: 150,
       borderRadius: 12,
       overflow: 'hidden',
+      borderWidth: 2,                       // the border
+      borderColor: 'rgba(255,255,255,0.63)', // white-ish border like your CSS
     },
+
+    disasterButtonBlur: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderRadius: 12,
+    },
+
     disasterButtonGradient: {
       flex: 1,
       width: '100%',
@@ -176,6 +187,14 @@ export const createHomeStyles = (colors: ColorScheme) => {
       justifyContent: 'center',
       alignItems: 'center',
     },
+
+    disasterImage: {
+      width: 90,
+      height: 90,
+      marginBottom: 8,
+      resizeMode: 'contain',
+    },
+
     disasterButtonText: {
       color: '#fff',
       fontSize: 20,

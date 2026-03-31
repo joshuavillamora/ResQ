@@ -43,7 +43,7 @@ const lightColors: ColorScheme = {
   warning: "#f59e0b",
   danger: "#ef4444",
   shadow: "#000000",
-  button: "#3b82f6",
+  button: "#2A2A2A",
   gradients: {
     background: ["#f8fafc", "#e2e8f0"],
     surface: ["#ffffff", "#f8fafc"],
@@ -54,7 +54,7 @@ const lightColors: ColorScheme = {
     danger: ["#ef4444", "#dc2626"],
     muted: ["#9ca3af", "#6b7280"],
     empty: ["#f3f4f6", "#e5e7eb"],
-    button: ["#3b82f6", "#1d4ed8"],
+    button: ["#2A2A2A", "#444444"],
 
   },
   backgrounds: {
