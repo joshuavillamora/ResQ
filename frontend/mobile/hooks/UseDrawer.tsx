@@ -1,0 +1,30 @@
+import React, { createContext, useContext } from "react";
+
+type DrawerContextValue = {
+  menuOpen: boolean;
+  toggleMenu: () => void;
+  closeMenu: () => void;
+};
+
+const DrawerContext = createContext<DrawerContextValue | null>(null);
+
+type DrawerProviderProps = {
+  value: DrawerContextValue;
+  children: React.ReactNode;
+};
+
+export const DrawerProvider = ({ value, children }: DrawerProviderProps) => {
+  return <DrawerContext.Provider value={value}>{children}</DrawerContext.Provider>;
+};
+
+const useDrawer = () => {
+  const context = useContext(DrawerContext);
+
+  if (!context) {
+    throw new Error("useDrawer must be used within a DrawerProvider");
+  }
+
+  return context;
+};
+
+export default useDrawer;
