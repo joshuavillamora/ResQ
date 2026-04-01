@@ -210,6 +210,14 @@ const AnimatedTabs = () => {
                 ),
               }}
             />
+            <Tabs.Screen
+              name="reportUpdate"
+              options={{
+                title: 'Report Update',
+                tabBarButton: () => null,
+                headerShown: false,
+              }}
+            />
           </Tabs>
 
           {menuOpen && (
