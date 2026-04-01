@@ -214,7 +214,7 @@ const AnimatedTabs = () => {
               name="reportUpdate"
               options={{
                 title: 'Report Update',
-                tabBarButton: () => null,
+                tabBarStyle: { display: 'none' }, 
                 headerShown: false,
               }}
             />

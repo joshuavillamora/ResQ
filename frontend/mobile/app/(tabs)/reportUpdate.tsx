@@ -66,25 +66,49 @@ const Box2 = () => (
 
 const Box3 = () => (
     <View style={[styles.box, styles.box3]}>
-        <Text style={styles.boxText}>Box 3</Text>
+        <Text style={[styles.boxText, {fontSize: 14, left: 20}]}>Mandurriao, Iloilo City</Text>
     </View>
 );
 
 const Box4 = () => (
     <View style={[styles.box, styles.box4]}>
-        <Text style={styles.boxText}>Box 4</Text>
+        <View style={{ flexDirection: "row" }}>
+            <Image 
+                source={require('@/assets/images/camera.png')} 
+                style={{
+                    width: 24,
+                    height: 21,
+                    marginRight: 6,
+                }}
+            />
+            <Text style={styles.boxText}>Add Photo</Text>
+        </View>
+        <Text style={[styles.boxText, { color: "#B5B5B5", fontSize: 14, top: 4 }]}>Optional - helps verify the area</Text>
     </View>
 );
 
 const Box5 = () => (
     <View style={[styles.box, styles.box5]}>
-        <Text style={styles.boxText}>Box 5</Text>
+        <Text style={[styles.boxText, { fontSize: 14, top: 20, left: 20 }]}>Additional details (optional)</Text>
     </View>
 );
 
 const Box6 = () => (
     <View style={[styles.box, styles.box6]}>
-        <Text style={styles.boxText}>Box 6</Text>
+        <Image 
+            source={require('@/assets/images/submit.png')} 
+            style={{
+                width: 25, 
+                height: 27, 
+                left: 45,
+                position: 'absolute',
+                top: '50%',
+                transform: [{ translateY: -13.5 }], 
+            }}
+        />
+        <View style={styles.centeredTextContainer}>
+            <Text style={[styles.boxText, {textAlign: 'center', fontSize: 24}]}>Update Report</Text>
+        </View>
     </View>
 );
 
@@ -125,10 +149,13 @@ const styles = StyleSheet.create({
   box3: {
     height: 49,
     backgroundColor: "#3A1D1D",
+    justifyContent: "center",
   },
   box4: {
     height: 87,
     backgroundColor: "#2C0303",
+    justifyContent: "center",
+    alignItems: "center",
   },
   box5: {
     height: 246,
@@ -137,6 +164,9 @@ const styles = StyleSheet.create({
   box6: {
     height: 54,
     backgroundColor: "#881616",
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
   },
   boxText: {
     fontSize: 20,
