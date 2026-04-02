@@ -1,15 +1,20 @@
 import { createHomeStyles } from "@/assets/styles/home.style";
 import Header from "@/components/Header";
+import LocationLocator from "@/components/CurrentLocation";
 import useDrawer from "@/hooks/UseDrawer";
 import useTheme from "@/hooks/UseTheme";
 import { BlurView } from "expo-blur";
 import { Text, TouchableOpacity, View, Image, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
 
 export default function Index() {
   const { colors } = useTheme();
   const { menuOpen, toggleMenu } = useDrawer();
   const Homestyle = createHomeStyles(colors);
+
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [barangay, setBarangay] = useState<string>("");
 
   const buttons = [
     { id: 1, label: 'Flood', image: require('@/assets/images/flood.png') },
@@ -32,13 +37,17 @@ export default function Index() {
     >
       <SafeAreaView style={Homestyle.safeArea}>
         <Header menuOpen={menuOpen} onMenuToggle={toggleMenu} />
-        <View style={Homestyle.infoBar}>
-          <TouchableOpacity style={Homestyle.infoCircleButton} activeOpacity={0.85}>
-            <Text style={Homestyle.infoCircleButtonText}>SOS</Text>
-          </TouchableOpacity>
-          <Text style={Homestyle.infoBarTitle}>Hello</Text>
-          <Text style={Homestyle.infoBarSubtitle}>I&apos;m zneb
-          </Text>
+        <View style={[Homestyle.infoBar, { alignSelf: "center" }]}>
+          <LocationLocator
+            location={location}
+            onLocationChange={setLocation}
+            barangay={barangay}
+            onBarangayChange={setBarangay}
+          />
+          <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 16, marginTop: 4 }}>
+            <Text style={{ color: "#FFDBDB", fontSize: 16, fontWeight: "bold" }}>Network: Connected </Text>
+            <Text style={{ color: "#FAFEC0", fontSize: 16, fontWeight: "bold" }}>(SMS)</Text>
+          </View>
         </View>
         <View style={Homestyle.disasterGridContainer}>
             <View style={Homestyle.disasterGrid}>
