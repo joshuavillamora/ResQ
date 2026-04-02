@@ -26,7 +26,193 @@
 
   html,
   body {
-    @apply m-0 p-0;
+    @apply m-0 min-h-full bg-[#0f1f34] p-0 text-[#f2f7ff];
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply flex h-screen overflow-hidden bg-[#0f1f34] text-[#f2f7ff];
+  }
+
+  .app-main {
+    @apply flex flex-1 flex-col overflow-y-auto;
+  }
+
+  .app-page {
+    @apply p-6 md:p-8;
+  }
+
+  .app-page-inner {
+    @apply mx-auto max-w-7xl;
+  }
+
+  .app-page-inner-narrow {
+    @apply mx-auto max-w-5xl;
+  }
+
+  .app-card {
+    @apply rounded-lg border border-[rgba(168,198,238,0.1)] bg-[#24374f] p-6;
+  }
+
+  .app-card-title {
+    @apply mb-4 text-lg font-semibold text-white;
+  }
+
+  .app-muted-text {
+    @apply text-[#a8bce8];
+  }
+
+  .app-card-body {
+    @apply text-sm text-[#d6e6ff];
+  }
+
+  .app-button {
+    @apply w-full rounded-lg bg-[#2f4766] px-4 py-2 text-left text-sm font-medium text-white transition-colors hover:bg-[#3d5a8a];
+  }
+
+  .app-link-button {
+    @apply rounded-lg bg-[#2f4766] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[#3d5a8a];
+  }
+
+  .app-sidebar {
+    @apply fixed left-0 top-0 z-40 h-screen w-64 border-r border-[rgba(190,215,255,0.12)] bg-gradient-to-b from-[#24374f] to-[#1a2637] p-6 transition-transform duration-300 md:relative md:w-56 md:translate-x-0;
+  }
+
+  .app-sidebar-open {
+    @apply translate-x-0 md:translate-x-0;
+  }
+
+  .app-sidebar-closed {
+    @apply -translate-x-full md:translate-x-0;
+  }
+
+  .app-sidebar-brand {
+    @apply mb-8;
+  }
+
+  .app-sidebar-title {
+    @apply text-3xl font-bold tracking-tight text-white;
+  }
+
+  .app-sidebar-subtitle {
+    @apply mt-1 text-xs text-[#a8bce8];
+  }
+
+  .app-sidebar-nav {
+    @apply space-y-2;
+  }
+
+  .app-sidebar-link {
+    @apply flex items-center gap-3 rounded-lg px-4 py-3 text-[#d6e6ff] transition-all duration-200 hover:bg-[#2f4766] hover:text-white;
+  }
+
+  .app-sidebar-link-icon {
+    @apply text-xl;
+  }
+
+  .app-sidebar-link-label {
+    @apply text-sm font-medium;
+  }
+
+  .app-sidebar-footer {
+    @apply absolute bottom-6 left-6 right-6;
+  }
+
+  .app-sidebar-footer-inner {
+    @apply border-t border-[rgba(190,215,255,0.12)] pt-4;
+  }
+
+  .app-sidebar-toggle {
+    @apply fixed left-4 top-4 z-50 rounded bg-[#24374f] p-2 text-white md:hidden;
+  }
+
+  .app-overlay {
+    @apply fixed inset-0 z-30 bg-black/50 md:hidden;
+  }
+
+  .app-header {
+    @apply sticky top-0 z-20 rounded-b-3xl border-b border-[rgba(190,215,255,0.12)] bg-[rgba(71,75,80,1)] px-6 py-4 pl-14 backdrop-blur-sm md:px-8 md:pl-8;
+  }
+
+  .app-header-title {
+    @apply text-2xl font-bold text-white md:text-3xl;
+  }
+
+  .app-hero-card {
+    @apply mx-auto max-w-5xl rounded-xl border border-[rgba(168,198,238,0.1)] bg-[#24374f] p-8;
+  }
+
+  .app-hero-title {
+    @apply mb-2 text-4xl font-bold text-white;
+  }
+
+  .app-hero-text {
+    @apply mb-6 text-[#a8bce8];
+  }
+
+  .app-grid-2 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2;
+  }
+
+  .app-stat-grid {
+    @apply mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .app-stat-title {
+    @apply text-sm font-medium text-[#a8bce8];
+  }
+
+  .app-stat-value {
+    @apply mt-2 text-4xl font-bold text-white;
+  }
+
+  .app-stat-detail {
+    @apply mt-2 text-xs text-[#7a9fcf];
+  }
+
+  .app-activity-grid {
+    @apply grid grid-cols-1 gap-6 xl:grid-cols-3;
+  }
+
+  .app-activity-card {
+    @apply rounded-lg border border-[rgba(168,198,238,0.1)] bg-[#24374f] p-6 xl:col-span-2;
+  }
+
+  .app-activity-list {
+    @apply space-y-4;
+  }
+
+  .app-activity-row {
+    @apply flex items-start gap-3 border-b border-[rgba(190,215,255,0.12)] pb-3 last:border-b-0;
+  }
+
+  .app-activity-dot {
+    @apply mt-2 h-2 w-2 rounded-full bg-[#35ff32];
+  }
+
+  .app-activity-content {
+    @apply flex-1;
+  }
+
+  .app-activity-event {
+    @apply text-sm font-medium text-white;
+  }
+
+  .app-activity-location {
+    @apply text-xs text-[#a8bce8];
+  }
+
+  .app-activity-time {
+    @apply text-xs text-[#7a9fcf];
+  }
+
+  .app-actions-card {
+    @apply rounded-lg border border-[rgba(168,198,238,0.1)] bg-[#24374f] p-6;
+  }
+
+  .app-actions-list {
+    @apply space-y-3;
   }
 }
 
