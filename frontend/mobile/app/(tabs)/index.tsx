@@ -37,13 +37,17 @@ export default function Index() {
     >
       <SafeAreaView style={Homestyle.safeArea}>
         <Header menuOpen={menuOpen} onMenuToggle={toggleMenu} />
-        <View style={Homestyle.infoBar}>
+        <View style={[Homestyle.infoBar, { alignSelf: "center" }]}>
           <LocationLocator
             location={location}
             onLocationChange={setLocation}
             barangay={barangay}
             onBarangayChange={setBarangay}
           />
+          <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 16, marginTop: 4 }}>
+            <Text style={{ color: "#FFDBDB", fontSize: 16, fontWeight: "bold" }}>Network: Connected </Text>
+            <Text style={{ color: "#FAFEC0", fontSize: 16, fontWeight: "bold" }}>(SMS)</Text>
+          </View>
         </View>
         <View style={Homestyle.disasterGridContainer}>
             <View style={Homestyle.disasterGrid}>

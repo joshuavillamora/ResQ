@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image } from "react-native";
 import * as Location from "expo-location";
 
 type LocationType = {
@@ -82,21 +82,21 @@ export default function LocationCapture({
   }, []);
 
   return (
-    <View style={{ marginVertical: 10 }}>
+    <View style={{ marginTop: 8 }}>
       {/* Location card */}
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 12, borderRadius: 12, marginBottom: 10 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", borderRadius: 12, marginHorizontal: 16 }}>
         {loading ? (
           <ActivityIndicator size="small" style={{ marginRight: 10 }} />
         ) : (
-          <Text style={{ marginRight: 10 }}>📍</Text>
+          <Text></Text>
         )}
 
         <View style={{ flex: 1 }}>
           {location ? (
             <>
               <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontWeight: "bold" }}>GPS: </Text>
-                <Text>{location.lat.toFixed(6)}, {location.lng.toFixed(6)}</Text>
+                <Text style={{ fontWeight: "bold", color: "#FFDBDB", fontSize: 16 }}>GPS: </Text>
+                <Text style={{ fontWeight: "bold", color: "#FFDBDB", fontSize: 16 }}>{location.lat.toFixed(6)}, {location.lng.toFixed(6)}</Text>
               </View>
             </>
           ) : error ? (
@@ -106,21 +106,21 @@ export default function LocationCapture({
           )}
         </View>
 
-        <TouchableOpacity onPress={captureLocation} disabled={loading} style={{ padding: 8 }}>
-          <Text>🔄</Text>
+        <TouchableOpacity onPress={captureLocation} disabled={loading} style={{ padding: 8, alignItems: "center", justifyContent: "center" }}>
+          <Image source={require('@/assets/images/reload.png')} style={{ width: 17, height: 20 }} />
         </TouchableOpacity>
       </View>
 
       {/* Barangay display */}
       <View
         style={{
-          height: 50,
-          borderRadius: 12,
-          paddingHorizontal: 12,
-          justifyContent: "center",
+          marginLeft: 16,
+          marginBottom: 0,
+          flexDirection: "row",
         }}
       >
-        <Text style={{ color: barangay ? "#000" : "#999" }}>
+        <Image source={require('@/assets/images/map-pin.png')} style={{ width: 20, height: 22 }} />
+        <Text style={{ color: "#FFDBDB", fontWeight: "bold", fontSize: 16, marginLeft: 3 }}>
           {barangay || "Barangay / Area name (auto-detected)"}
         </Text>
       </View>
