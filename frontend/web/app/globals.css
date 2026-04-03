@@ -214,6 +214,202 @@
   .app-actions-list {
     @apply space-y-3;
   }
+
+  .app-dashboard-grid {
+    @apply mx-auto max-w-[1440px] space-y-6;
+  }
+
+  .app-summary-grid {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-3;
+  }
+
+  .app-summary-card {
+    @apply rounded-2xl border border-white/8 bg-[#1a2433] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.25)];
+  }
+
+  .app-summary-content {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .app-summary-title {
+    @apply text-xs font-semibold text-slate-300/70;
+  }
+
+  .app-summary-value {
+    @apply mt-2 text-2xl font-bold text-white;
+  }
+
+  .app-summary-delta {
+    @apply mt-1 text-[11px] text-slate-400;
+  }
+
+  .app-summary-badge {
+    @apply flex h-8 w-8 items-center justify-center rounded-lg border;
+  }
+
+  .app-summary-badge--red {
+    @apply border-red-500/70 text-red-500;
+  }
+
+  .app-summary-badge--orange {
+    @apply border-orange-500/70 text-orange-500;
+  }
+
+  .app-summary-badge--green {
+    @apply border-emerald-500/70 text-emerald-500;
+  }
+
+  .app-summary-badge-mark {
+    @apply h-3.5 w-3.5 rounded-sm border-2 border-current;
+  }
+
+  .app-chart-grid {
+    @apply grid grid-cols-1 gap-6 xl:grid-cols-3;
+  }
+
+  .app-chart-card {
+    @apply rounded-2xl border border-white/8 bg-[#1a2433] p-5 shadow-[0_20px_40px_rgba(0,0,0,0.25)];
+  }
+
+  .app-chart-title {
+    @apply mb-4 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-300/80;
+  }
+
+  .app-chart-area {
+    @apply h-64;
+  }
+
+  .app-donut-layout {
+    @apply flex h-64 flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between;
+  }
+
+  .app-donut-plot {
+    @apply h-40 w-40;
+  }
+
+  .app-donut-legend {
+    @apply grid gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-300/80;
+  }
+
+  .app-donut-legend-item {
+    @apply flex items-center gap-2;
+  }
+
+  .app-donut-legend-dot {
+    @apply h-2.5 w-2.5 rounded-full;
+  }
+
+  .app-donut-legend-dot--red {
+    @apply bg-red-500;
+  }
+
+  .app-donut-legend-dot--green {
+    @apply bg-emerald-500;
+  }
+
+  .app-donut-legend-dot--blue {
+    @apply bg-sky-500;
+  }
+
+  .app-donut-legend-value {
+    @apply ml-auto text-slate-100;
+  }
+
+  .app-chart-tooltip {
+    @apply rounded-xl border border-[rgba(255,255,255,0.12)] bg-[#24374f] px-3 py-2 text-sm text-white shadow-lg;
+  }
+
+  .app-chart-tooltip-label {
+    @apply mb-1 text-[10px] uppercase tracking-[0.2em] text-slate-300/80;
+  }
+
+  .app-chart-tooltip-list {
+    @apply space-y-1;
+  }
+
+  .app-chart-tooltip-item {
+    @apply flex items-center justify-between gap-4 text-xs text-slate-100;
+  }
+
+  .app-report-card {
+    @apply overflow-hidden rounded-2xl border border-white/8 bg-[#1a2433] shadow-[0_20px_40px_rgba(0,0,0,0.25)];
+  }
+
+  .app-report-table-wrap {
+    @apply overflow-x-auto px-5 py-4;
+  }
+
+  .app-report-table {
+    @apply min-w-full border-separate border-spacing-y-2 text-left text-sm;
+  }
+
+  .app-report-head {
+    @apply pb-2 font-semibold;
+  }
+
+  .app-report-head-row {
+    @apply text-[10px] uppercase tracking-[0.2em] text-slate-400;
+  }
+
+  .app-report-row {
+    @apply text-slate-100;
+  }
+
+  .app-report-cell-type {
+    @apply pr-4;
+  }
+
+  .app-report-cell-text {
+    @apply pr-4 text-slate-300;
+  }
+
+  .app-tone-pill {
+    @apply inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em];
+  }
+
+  .app-tone-pill--red {
+    @apply border-red-500/50 text-red-300;
+  }
+
+  .app-tone-pill--orange {
+    @apply border-orange-500/50 text-orange-300;
+  }
+
+  .app-tone-pill--green {
+    @apply border-emerald-500/50 text-emerald-300;
+  }
+
+  .app-tone-pill--blue {
+    @apply border-sky-500/50 text-sky-300;
+  }
+
+  .app-activity-panel {
+    @apply rounded-2xl border border-white/8 bg-[#1a2433] shadow-[0_20px_40px_rgba(0,0,0,0.25)];
+  }
+
+  .app-activity-panel-body {
+    @apply space-y-3 px-5 py-4;
+  }
+
+  .app-activity-icon {
+    @apply mt-1 h-3 w-3 rounded-full border-2;
+  }
+
+  .app-activity-icon--red {
+    @apply border-red-500 text-red-500;
+  }
+
+  .app-activity-icon--green {
+    @apply border-emerald-500 text-emerald-500;
+  }
+
+  .app-activity-icon--blue {
+    @apply border-sky-500 text-sky-500;
+  }
+
+  .app-activity-text {
+    @apply text-sm leading-5 text-slate-100;
+  }
 }
 
 /* Custom scrollbar styling */
