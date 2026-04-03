@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { WebView } from 'react-native-webview';
 
 type MapProps = {
   location?: {
@@ -20,7 +19,11 @@ const map = ({ location = null }: MapProps) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
         <style>
-          html, body, #map { height: 100%; margin: 0; padding: 0; }
+          html, body, #map {
+            height: 100%; 
+            margin: 0; 
+            padding: 0;
+          }
           .leaflet-control-attribution { display: none; }
         </style>
       </head>
@@ -45,14 +48,14 @@ const map = ({ location = null }: MapProps) => {
     </html>
   `;
 
+  const iframeSrc = `data:text/html;charset=utf-8,${encodeURIComponent(leafletHtml)}`;
+
   return (
     <View style={styles.container}>
-      <WebView
-        originWhitelist={["*"]}
-        source={{ html: leafletHtml }}
-        style={styles.webview}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
+      <iframe
+        src={iframeSrc}
+        style={{ flex: 1, width: '100%', height: '100%', border: 'none' }}
+        title="Map"
       />
     </View>
   );
@@ -60,9 +63,6 @@ const map = ({ location = null }: MapProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  webview: {
     flex: 1,
   },
 });
