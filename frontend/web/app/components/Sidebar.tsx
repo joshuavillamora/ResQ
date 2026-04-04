@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { clearSession } from "@/lib/api";
 
 const navigationItems = [
   { label: "Dashboard", href: "/dashboard"},
@@ -13,6 +15,14 @@ const navigationItems = [
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  function handleLogout() {
+    clearSession();
+    setIsOpen(false);
+    router.push("/");
+  }
 
   return (
     <>
@@ -40,7 +50,8 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className="app-sidebar-link"
+              className={`app-sidebar-link ${pathname === item.href ? "bg-[#2f4766] text-white" : ""}`}
+              onClick={() => setIsOpen(false)}
             >
               <span className="app-sidebar-link-label">{item.label}</span>
             </Link>
@@ -50,7 +61,10 @@ export default function Sidebar() {
         {/* Footer */}
         <div className="app-sidebar-footer">
           <div className="app-sidebar-footer-inner">
-            <button className="app-sidebar-link w-full justify-start py-2 text-left text-xs text-[#a8bce8] hover:text-white">
+            <button
+              className="app-sidebar-link w-full justify-start py-2 text-left text-xs text-[#a8bce8] hover:text-white"
+              onClick={handleLogout}
+            >
               Logout
             </button>
           </div>
