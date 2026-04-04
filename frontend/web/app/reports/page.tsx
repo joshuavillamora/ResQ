@@ -10,7 +10,7 @@ import {
   type BackendReport,
 } from "@/lib/api";
 
-type ReportType = "Earthquake" | "Fire" | "Flood" | "Landslide" | "Typhoon Damage" | "Medical Emergency";
+type ReportType = "Earthquake" | "Fire" | "Flood" | "Landslide" | "Typhoon" | "Medical Emergency" | "Volcano";
 type ReportStatus = "Pending" | "Resolved" | "In Progress" | "Verified" | "False Report";
 type ReportSource = "API" | "SMS";
 type Confidence = "High" | "Medium" | "Low";
@@ -31,8 +31,9 @@ const typeOptions: Array<"ALL TYPES" | ReportType> = [
   "Fire",
   "Flood",
   "Landslide",
-  "Typhoon Damage",
+  "Typhoon",
   "Medical Emergency",
+  "Volcano",
 ];
 
 const statusOptions: Array<"ALL STATUS" | ReportStatus> = ["ALL STATUS", "Pending", "Verified", "In Progress", "Resolved", "False Report"];
@@ -42,8 +43,9 @@ const typeColorMap: Record<ReportType, string> = {
   Fire: "app-tone-pill app-tone-pill--red",
   Flood: "app-tone-pill app-tone-pill--blue",
   Landslide: "app-tone-pill app-tone-pill--green",
-  "Typhoon Damage": "app-tone-pill app-tone-pill--orange",
+  Typhoon: "app-tone-pill app-tone-pill--orange",
   "Medical Emergency": "app-tone-pill app-tone-pill--red",
+  Volcano: "app-tone-pill app-tone-pill--red",
 };
 
 const confidenceColorMap: Record<Confidence, string> = {
