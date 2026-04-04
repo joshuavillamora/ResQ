@@ -1,6 +1,7 @@
 import useTheme from '@/hooks/UseTheme';
 import useDrawer, { DrawerProvider } from '@/hooks/UseDrawer';
 import Menu from '@/components/Menu';
+import ReportSent from "@/components/ReportSent";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -8,7 +9,7 @@ import { Animated, Dimensions, Image, Pressable, View } from 'react-native';
 
 const AnimatedTabs = () => {
   const { colors } = useTheme();
-  const { menuOpen, closeMenu } = useDrawer();
+  const { menuOpen, closeMenu, overlayVisible, setOverlayVisible, selectedDisaster } = useDrawer();
   const menuAnimation = useRef(new Animated.Value(0)).current;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
@@ -227,13 +228,34 @@ const AnimatedTabs = () => {
             />
           )}
         </Animated.View>
+        {overlayVisible && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 100, // 👈 higher than menu
+            }}
+          >
+            <ReportSent
+              visible={overlayVisible}
+              disaster={selectedDisaster}
+              onClose={() => setOverlayVisible(false)}
+            />
+          </View>
+        )}
       </View>
     </LinearGradient>
   );
 };
 
+
 const TabsLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [overlayVisible, setOverlayVisible] = useState(false);
+  const [selectedDisaster, setSelectedDisaster] = useState<number | null>(null);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -244,7 +266,15 @@ const TabsLayout = () => {
   };
 
   return (
-    <DrawerProvider value={{ menuOpen, toggleMenu, closeMenu }}>
+    <DrawerProvider value={{ 
+      menuOpen, 
+      toggleMenu, 
+      closeMenu,
+      overlayVisible,
+      setOverlayVisible,
+      selectedDisaster,
+      setSelectedDisaster
+    }}>
       <AnimatedTabs />
     </DrawerProvider>
   )

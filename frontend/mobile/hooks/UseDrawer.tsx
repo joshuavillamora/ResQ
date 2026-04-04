@@ -4,6 +4,12 @@ type DrawerContextValue = {
   menuOpen: boolean;
   toggleMenu: () => void;
   closeMenu: () => void;
+
+  overlayVisible: boolean;
+  setOverlayVisible: (value: boolean) => void;
+
+  selectedDisaster: number | null;
+  setSelectedDisaster: (value: number | null) => void;
 };
 
 const DrawerContext = createContext<DrawerContextValue | null>(null);

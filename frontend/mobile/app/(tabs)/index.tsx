@@ -15,6 +15,7 @@ export default function Index() {
 
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [barangay, setBarangay] = useState<string>("");
+  const { setOverlayVisible, setSelectedDisaster } = useDrawer();
 
   const buttons = [
     { id: 1, label: 'Flood', image: require('@/assets/images/flood.png') },
@@ -26,7 +27,8 @@ export default function Index() {
   ];
 
   const handleButtonPress = (id: number) => {
-    console.log(`Button ${id} pressed`);
+    setSelectedDisaster(id);
+    setOverlayVisible(true);
   };
 
   return (
