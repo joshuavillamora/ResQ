@@ -104,9 +104,10 @@ function reportToZone(report: BackendReport): Zone {
   const tone = toneFromDisaster(report.disaster_type);
   const palette = zonePalette(tone);
   const radius = 180 + Math.max(0, report.confidence) * 4;
+  const reportLabel = normalizeDisasterLabel(report.disaster_type);
 
   return {
-    name: `${report.barangay} ${report.disaster_type} report`,
+    name: `${reportLabel} report`,
     tone,
     lat: report.latitude,
     lng: report.longitude,

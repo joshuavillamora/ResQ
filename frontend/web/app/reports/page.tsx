@@ -10,9 +10,9 @@ import {
   type BackendReport,
 } from "@/lib/api";
 
-type ReportType = "Earthquake" | "Fire" | "Flood" | "Landslide" | "Typhoon" | "Medical Emergency" | "Volcano";
+type ReportType = "Medical Emergency" | "Typhoon" | "Landslide" | "Earthquake" | "Fire" | "Flood";
 type ReportStatus = "Pending" | "Resolved" | "In Progress" | "Verified" | "False Report";
-type ReportSource = "API" | "SMS";
+type ReportSource = "WIFI" | "SMS";
 type Confidence = "High" | "Medium" | "Low";
 
 type Report = {
@@ -27,13 +27,12 @@ type Report = {
 
 const typeOptions: Array<"ALL TYPES" | ReportType> = [
   "ALL TYPES",
+  "Medical Emergency",
+  "Typhoon",
+  "Landslide",
   "Earthquake",
   "Fire",
   "Flood",
-  "Landslide",
-  "Typhoon",
-  "Medical Emergency",
-  "Volcano",
 ];
 
 const statusOptions: Array<"ALL STATUS" | ReportStatus> = ["ALL STATUS", "Pending", "Verified", "In Progress", "Resolved", "False Report"];
@@ -42,10 +41,9 @@ const typeColorMap: Record<ReportType, string> = {
   Earthquake: "app-tone-pill app-tone-pill--orange",
   Fire: "app-tone-pill app-tone-pill--red",
   Flood: "app-tone-pill app-tone-pill--blue",
-  Landslide: "app-tone-pill app-tone-pill--green",
   Typhoon: "app-tone-pill app-tone-pill--orange",
   "Medical Emergency": "app-tone-pill app-tone-pill--red",
-  Volcano: "app-tone-pill app-tone-pill--red",
+  Landslide: "app-tone-pill app-tone-pill--green",
 };
 
 const confidenceColorMap: Record<Confidence, string> = {
@@ -81,12 +79,14 @@ function formatTime(isoDate: string | null): string {
 }
 
 function mapBackendReport(report: BackendReport): Report {
+  const normalizedSource = report.source.toUpperCase() === "SMS" ? "SMS" : "WIFI";
+
   return {
     id: `RPT-${String(report.id).padStart(3, "0")}`,
     type: normalizeDisasterLabel(report.disaster_type) as ReportType,
     location: report.barangay,
     time: formatTime(report.created_at),
-    source: report.source.toUpperCase() === "SMS" ? "SMS" : "API",
+    source: normalizedSource,
     confidence: confidenceLabel(report.confidence),
     status: normalizeStatusLabel(report.status) as ReportStatus,
   };
@@ -212,7 +212,7 @@ export default function ReportsPage() {
                     <td className="app-reports-cell app-report-cell-text">{report.location}</td>
                     <td className="app-reports-cell">{report.time}</td>
                     <td className="app-reports-cell">
-                      <span className={report.source === "API" ? "app-tone-pill app-tone-pill--blue" : "app-tone-pill app-tone-pill--orange"}>
+                      <span className={report.source === "WIFI" ? "app-tone-pill app-tone-pill--blue" : "app-tone-pill app-tone-pill--orange"}>
                         {report.source}
                       </span>
                     </td>
