@@ -97,27 +97,28 @@ export default function ReportSent({ visible, disaster, onClose }: Props) {
       >
         <Text style={styles.title}>
           {disaster
-            ? `${disasterMap[disaster]} report sent`
-            : "Your report has been sent"}
+            ? `${disasterMap[disaster]} report has been sent!`
+            : "Your report has been sent!"}
         </Text>
 
         {/* checklist */}
         <View style={styles.checklist}>
-          <Text style={styles.check}>✔ Location captured</Text>
-          <Text style={styles.check}>✔ Report delivered</Text>
-          <Text style={styles.check}>✔ Authorities notified</Text>
         </View>
 
         {/* buttons */}
-        <View style={styles.buttonRow}>
-          <TouchableOpacity onPress={onClose} style={styles.safeBtn}>
-            <Text>Mark as Safe</Text>
-          </TouchableOpacity>
+        <TouchableOpacity onPress={onClose} style={styles.button}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+            <Text style={styles.btnText}>Mark as Safe</Text>
+            <Image source={require('@/assets/images/checkmark.png')} style={{ width: 27, height: 30, marginLeft: "auto", top: 4, marginRight: 4 }} />
+          </View>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.routeBtn}>
-            <Text style={{ color: "#fff" }}>Open Route</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.button}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: "100%" }}>
+            <Text style={styles.btnText}>Open Route</Text>
+            <Image source={require('@/assets/images/map.png')} style={{ width: 25, height: 26, marginLeft: "auto", top: 2, marginRight: 5 }} />
+          </View>
+        </TouchableOpacity>
       </Animated.View>
     </Animated.View>
   );
@@ -136,37 +137,55 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
+    width: 160,
+    height: 160,
   },
   content: {
     alignItems: "center",
+    width: "100%",
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#F5F5F5",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,    
   },
   checklist: {
-    marginTop: 12,
+    width: "85%",
+    height: 480,
+    backgroundColor: "#1F2937",
+    marginTop: 32,
+    borderRadius: 12,
+    marginBottom: 20,
   },
   check: {
     color: "#fff",
   },
-  buttonRow: {
-    flexDirection: "row",
-    marginTop: 20,
-  },
-  safeBtn: {
-    backgroundColor: "#fff",
+  button: {
+    backgroundColor: "#430A0A",
     padding: 10,
-    borderRadius: 8,
-    marginRight: 10,
+    margin: 4,
+    borderRadius: 25,
+    width: 225,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
   },
-  routeBtn: {
-    backgroundColor: "#000",
-    padding: 10,
-    borderRadius: 8,
-  },
+  btnText: {
+    position: "absolute",
+    color: "white",
+    textAlign: "center",
+    fontWeight: 600,
+    fontSize: 24,
+    lineHeight: 15,
+    left: 0,
+    right: 20,
+    bottom: 8,
+  }
 });
