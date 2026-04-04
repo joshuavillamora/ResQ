@@ -1,10 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-type ReportType = "Earthquake" | "Fire" | "Flood" | "Landslide" | "Volcano" | "Typhoon";
-type ReportStatus = "Pending" | "Resolved" | "In Progress";
-type ReportSource = "WiFi" | "SMS";
+import {
+  confidenceLabel,
+  fetchReports,
+  normalizeDisasterLabel,
+  normalizeStatusLabel,
+  type BackendReport,
+} from "@/lib/api";
+
+type ReportType = "Earthquake" | "Fire" | "Flood" | "Landslide" | "Typhoon Damage" | "Medical Emergency";
+type ReportStatus = "Pending" | "Resolved" | "In Progress" | "Verified" | "False Report";
+type ReportSource = "API" | "SMS";
 type Confidence = "High" | "Medium" | "Low";
 
 type Report = {
@@ -17,22 +25,25 @@ type Report = {
   status: ReportStatus;
 };
 
-const reports: Report[] = [
-  { id: "RPT-001", type: "Earthquake", location: "Brgy. Tondo, Manila", time: "10:34 AM", source: "WiFi", confidence: "High", status: "Pending" },
-  { id: "RPT-002", type: "Fire", location: "Brgy. Tondo, Manila", time: "10:34 AM", source: "SMS", confidence: "Medium", status: "Resolved" },
-  { id: "RPT-003", type: "Flood", location: "Brgy. Tondo, Manila", time: "10:34 AM", source: "SMS", confidence: "Low", status: "In Progress" },
-  { id: "RPT-004", type: "Landslide", location: "Brgy. Tondo, Manila", time: "10:34 AM", source: "WiFi", confidence: "High", status: "Pending" },
-  { id: "RPT-005", type: "Volcano", location: "Brgy. Tondo, Manila", time: "10:34 AM", source: "SMS", confidence: "Medium", status: "Resolved" },
-  { id: "RPT-006", type: "Typhoon", location: "Brgy. Tondo, Manila", time: "10:34 AM", source: "SMS", confidence: "Low", status: "In Progress" },
+const typeOptions: Array<"ALL TYPES" | ReportType> = [
+  "ALL TYPES",
+  "Earthquake",
+  "Fire",
+  "Flood",
+  "Landslide",
+  "Typhoon Damage",
+  "Medical Emergency",
 ];
+
+const statusOptions: Array<"ALL STATUS" | ReportStatus> = ["ALL STATUS", "Pending", "Verified", "In Progress", "Resolved", "False Report"];
 
 const typeColorMap: Record<ReportType, string> = {
   Earthquake: "app-tone-pill app-tone-pill--orange",
   Fire: "app-tone-pill app-tone-pill--red",
   Flood: "app-tone-pill app-tone-pill--blue",
   Landslide: "app-tone-pill app-tone-pill--green",
-  Volcano: "app-tone-pill app-tone-pill--red",
-  Typhoon: "app-tone-pill app-tone-pill--blue",
+  "Typhoon Damage": "app-tone-pill app-tone-pill--orange",
+  "Medical Emergency": "app-tone-pill app-tone-pill--red",
 };
 
 const confidenceColorMap: Record<Confidence, string> = {
@@ -44,12 +55,82 @@ const confidenceColorMap: Record<Confidence, string> = {
 const statusColorMap: Record<ReportStatus, string> = {
   Pending: "app-tone-pill app-tone-pill--orange",
   Resolved: "app-tone-pill app-tone-pill--green",
-  "In Progress": "app-tone-pill app-tone-pill--red",
+  "In Progress": "app-tone-pill app-tone-pill--blue",
+  Verified: "app-tone-pill app-tone-pill--green",
+  "False Report": "app-tone-pill app-tone-pill--red",
 };
 
+function formatTime(isoDate: string | null): string {
+  if (!isoDate) {
+    return "Unknown";
+  }
+
+  const parsed = new Date(isoDate);
+  if (Number.isNaN(parsed.getTime())) {
+    return "Unknown";
+  }
+
+  return parsed.toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function mapBackendReport(report: BackendReport): Report {
+  return {
+    id: `RPT-${String(report.id).padStart(3, "0")}`,
+    type: normalizeDisasterLabel(report.disaster_type) as ReportType,
+    location: report.barangay,
+    time: formatTime(report.created_at),
+    source: report.source.toUpperCase() === "SMS" ? "SMS" : "API",
+    confidence: confidenceLabel(report.confidence),
+    status: normalizeStatusLabel(report.status) as ReportStatus,
+  };
+}
+
 export default function ReportsPage() {
+  const [reports, setReports] = useState<Report[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<"ALL TYPES" | ReportType>("ALL TYPES");
   const [selectedStatus, setSelectedStatus] = useState<"ALL STATUS" | ReportStatus>("ALL STATUS");
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadReports = async () => {
+      setIsLoading(true);
+      setLoadError(null);
+
+      try {
+        const backendReports = await fetchReports();
+
+        if (!isActive) {
+          return;
+        }
+
+        setReports(backendReports.map(mapBackendReport));
+      } catch (error) {
+        if (!isActive) {
+          return;
+        }
+
+        setLoadError(error instanceof Error ? error.message : "Failed to load reports from backend");
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadReports();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const filteredReports = useMemo(() => {
     return reports.filter((report) => {
@@ -57,7 +138,7 @@ export default function ReportsPage() {
       const statusMatch = selectedStatus === "ALL STATUS" || report.status === selectedStatus;
       return typeMatch && statusMatch;
     });
-  }, [selectedStatus, selectedType]);
+  }, [reports, selectedStatus, selectedType]);
 
   return (
     <div className="app-page">
@@ -79,13 +160,9 @@ export default function ReportsPage() {
               onChange={(event) => setSelectedType(event.target.value as "ALL TYPES" | ReportType)}
               aria-label="Filter by report type"
             >
-              <option value="ALL TYPES">ALL TYPES</option>
-              <option value="Earthquake">Earthquake</option>
-              <option value="Fire">Fire</option>
-              <option value="Flood">Flood</option>
-              <option value="Landslide">Landslide</option>
-              <option value="Volcano">Volcano</option>
-              <option value="Typhoon">Typhoon</option>
+              {typeOptions.map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
             </select>
             <select
               id="status-filter"
@@ -94,13 +171,19 @@ export default function ReportsPage() {
               onChange={(event) => setSelectedStatus(event.target.value as "ALL STATUS" | ReportStatus)}
               aria-label="Filter by report status"
             >
-              <option value="ALL STATUS">ALL STATUS</option>
-              <option value="Pending">Pending</option>
-              <option value="Resolved">Resolved</option>
-              <option value="In Progress">In Progress</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>{status}</option>
+              ))}
             </select>
           </div>
         </section>
+
+        {loadError ? (
+          <section className="app-card">
+            <h2 className="app-card-title">Backend Connection Error</h2>
+            <p className="app-card-body">{loadError}</p>
+          </section>
+        ) : null}
 
         <section className="app-report-card">
           <div className="app-report-table-wrap app-reports-table-wrap-tight">
@@ -127,7 +210,7 @@ export default function ReportsPage() {
                     <td className="app-reports-cell app-report-cell-text">{report.location}</td>
                     <td className="app-reports-cell">{report.time}</td>
                     <td className="app-reports-cell">
-                      <span className={report.source === "WiFi" ? "app-tone-pill app-tone-pill--blue" : "app-tone-pill app-tone-pill--orange"}>
+                      <span className={report.source === "API" ? "app-tone-pill app-tone-pill--blue" : "app-tone-pill app-tone-pill--orange"}>
                         {report.source}
                       </span>
                     </td>
@@ -147,6 +230,9 @@ export default function ReportsPage() {
               </tbody>
             </table>
           </div>
+          {isLoading ? (
+            <p className="app-reports-empty">Loading reports from backend...</p>
+          ) : null}
           {filteredReports.length === 0 ? (
             <p className="app-reports-empty">No reports match the selected filters.</p>
           ) : null}

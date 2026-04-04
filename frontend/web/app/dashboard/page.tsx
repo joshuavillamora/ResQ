@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+
 import {
   CartesianGrid,
   Cell,
@@ -12,6 +14,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+
+import {
+  confidenceLabel,
+  fetchReports,
+  normalizeDisasterLabel,
+  normalizeStatusLabel,
+  type BackendReport,
+} from "@/lib/api";
 
 type SummaryCard = {
   label: string;
@@ -35,49 +45,46 @@ type ActivityItem = {
   tone: "warning" | "success" | "info";
 };
 
-const summaryCards: SummaryCard[] = [
-  { label: "Active Reports", value: "11", delta: "+3 today", tone: "red" },
-  { label: "High Confidence", value: "7", delta: "67% rate", tone: "orange" },
-  { label: "Verified", value: "5", delta: "+3 today", tone: "green" },
-];
+function toneFromStatus(status: string): ReportRow["tone"] {
+  if (status === "resolved" || status === "verified") {
+    return "green";
+  }
 
-const reportRows: ReportRow[] = [
-  { type: "Earthquake", location: "Brgy. Tondo, Manila", confidence: "High", source: "SMS", status: "Pending", tone: "orange" },
-  { type: "Fire", location: "Brgy. Tondo, Manila", confidence: "Medium", source: "Manual", status: "Resolved", tone: "red" },
-  { type: "Flood", location: "Brgy. Tondo, Manila", confidence: "Low", source: "SMS", status: "In Progress", tone: "blue" },
-  { type: "Landslide", location: "Brgy. Tondo, Manila", confidence: "High", source: "WIS", status: "Pending", tone: "green" },
-  { type: "Flood", location: "Brgy. Tondo, Manila", confidence: "Medium", source: "WIS", status: "Resolved", tone: "red" },
-  { type: "Typhoon", location: "Brgy. Tondo, Manila", confidence: "Low", source: "SMS", status: "In Progress", tone: "orange" },
-  { type: "Earthquake", location: "Brgy. Tondo, Manila", confidence: "High", source: "WIS", status: "Pending", tone: "orange" },
-  { type: "Fire", location: "Brgy. Tondo, Manila", confidence: "Medium", source: "SMS", status: "Resolved", tone: "green" },
-];
+  if (status === "responding") {
+    return "blue";
+  }
 
-const activityItems: ActivityItem[] = [
-  { message: "New fire report received from Brgy. Tondo, Manila", time: "11:10 PM", tone: "warning" },
-  { message: "RPT-001 verified by crowd consensus (7 reports)", time: "10:45 PM", tone: "success" },
-  { message: "Cap. Del Cruz deployed to RPT-001", time: "10:40 PM", tone: "info" },
-  { message: "Flood warning issued for Quezon City area", time: "10:30 PM", tone: "warning" },
-  { message: "New SMS report received from Brgy. Tondo, Manila", time: "10:15 PM", tone: "warning" },
-  { message: "RPT-001 verified by crowd consensus (7 reports)", time: "10:05 PM", tone: "success" },
-];
+  if (status === "unverified") {
+    return "orange";
+  }
 
-const lineData = [
-  { name: "6AM", reports: 2, resolved: 1 },
-  { name: "8AM", reports: 4, resolved: 2 },
-  { name: "10AM", reports: 6, resolved: 4 },
-  { name: "12PM", reports: 7, resolved: 5 },
-  { name: "2PM", reports: 8, resolved: 5 },
-  { name: "4PM", reports: 8, resolved: 6 },
-  { name: "6PM", reports: 9, resolved: 6 },
-  { name: "8PM", reports: 10, resolved: 7 },
-  { name: "10PM", reports: 11, resolved: 8 },
-];
+  return "red";
+}
 
-const disasterData = [
-  { name: "Fire", value: 10, color: "#ff3b30", tone: "red" },
-  { name: "Typhoon", value: 4, color: "#27e84f", tone: "green" },
-  { name: "Flood", value: 3, color: "#3b82f6", tone: "blue" },
-];
+function formatRelative(isoDate: string | null): string {
+  if (!isoDate) {
+    return "Unknown";
+  }
+
+  const timestamp = new Date(isoDate).getTime();
+  if (Number.isNaN(timestamp)) {
+    return "Unknown";
+  }
+
+  const deltaMinutes = Math.max(1, Math.floor((Date.now() - timestamp) / 60000));
+
+  if (deltaMinutes < 60) {
+    return `${deltaMinutes}m ago`;
+  }
+
+  const hours = Math.floor(deltaMinutes / 60);
+  if (hours < 24) {
+    return `${hours}h ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
 
 const chartTheme = {
   axisStroke: "rgba(255,255,255,0.35)",
@@ -150,9 +157,142 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
 }
 
 export default function DashboardPage() {
+  const [reports, setReports] = useState<BackendReport[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    const load = async () => {
+      try {
+        const payload = await fetchReports();
+        if (!active) {
+          return;
+        }
+        setReports(payload);
+      } catch (error) {
+        if (!active) {
+          return;
+        }
+        setLoadError(error instanceof Error ? error.message : "Failed to load dashboard data");
+      }
+    };
+
+    load();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const summaryCards = useMemo<SummaryCard[]>(() => {
+    const verified = reports.filter((report) => report.status === "verified" || report.status === "resolved").length;
+    const highConfidence = reports.filter((report) => report.confidence >= 70).length;
+
+    return [
+      { label: "Active Reports", value: String(reports.length), delta: "Live from backend", tone: "red" },
+      {
+        label: "High Confidence",
+        value: String(highConfidence),
+        delta: reports.length ? `${Math.round((highConfidence / reports.length) * 100)}% rate` : "0% rate",
+        tone: "orange",
+      },
+      { label: "Verified", value: String(verified), delta: "Resolved or verified", tone: "green" },
+    ];
+  }, [reports]);
+
+  const reportRows = useMemo<ReportRow[]>(() => {
+    return reports.slice(0, 8).map((report) => ({
+      type: normalizeDisasterLabel(report.disaster_type),
+      location: report.barangay,
+      confidence: confidenceLabel(report.confidence),
+      source: report.source.toUpperCase(),
+      status: normalizeStatusLabel(report.status),
+      tone: toneFromStatus(report.status),
+    }));
+  }, [reports]);
+
+  const activityItems = useMemo<ActivityItem[]>(() => {
+    return reports.slice(0, 6).map((report) => ({
+      message: `${normalizeDisasterLabel(report.disaster_type)} report in ${report.barangay} is ${normalizeStatusLabel(report.status).toLowerCase()}`,
+      time: formatRelative(report.created_at),
+      tone: report.status === "verified" || report.status === "resolved" ? "success" : report.status === "responding" ? "info" : "warning",
+    }));
+  }, [reports]);
+
+  const lineData = useMemo(() => {
+    const buckets = Array.from({ length: 8 }, (_, index) => {
+      const hour = (new Date().getHours() - (7 - index) + 24) % 24;
+      return {
+        hour,
+        name: `${hour}:00`,
+        reports: 0,
+        resolved: 0,
+      };
+    });
+
+    reports.forEach((report) => {
+      if (!report.created_at) {
+        return;
+      }
+
+      const hour = new Date(report.created_at).getHours();
+      const bucket = buckets.find((item) => item.hour === hour);
+
+      if (!bucket) {
+        return;
+      }
+
+      bucket.reports += 1;
+      if (report.status === "resolved" || report.status === "verified") {
+        bucket.resolved += 1;
+      }
+    });
+
+    return buckets.map((bucket) => ({
+      name: bucket.name,
+      reports: bucket.reports,
+      resolved: bucket.resolved,
+    }));
+  }, [reports]);
+
+  const disasterData = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    reports.forEach((report) => {
+      const label = normalizeDisasterLabel(report.disaster_type);
+      counts.set(label, (counts.get(label) ?? 0) + 1);
+    });
+
+    const palette = [
+      { color: "#ff3b30", tone: "red" as const },
+      { color: "#27e84f", tone: "green" as const },
+      { color: "#3b82f6", tone: "blue" as const },
+    ];
+
+    const entries = Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([name, value], index) => ({
+        name,
+        value,
+        color: palette[index]?.color ?? "#94a3b8",
+        tone: palette[index]?.tone ?? "blue",
+      }));
+
+    return entries.length ? entries : [{ name: "No Data", value: 1, color: "#64748b", tone: "blue" as const }];
+  }, [reports]);
+
   return (
     <div className="app-page">
       <div className="app-dashboard-grid">
+        {loadError ? (
+          <section className="app-card">
+            <h2 className="app-card-title">Backend Connection Error</h2>
+            <p className="app-card-body">{loadError}</p>
+          </section>
+        ) : null}
+
         <section className="app-summary-grid">
           {summaryCards.map((card) => (
             <article key={card.label} className="app-summary-card">

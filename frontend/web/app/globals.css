@@ -1,3 +1,4 @@
+@import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
 
 :root {
@@ -461,6 +462,206 @@
 
   .app-reports-empty {
     @apply px-4 py-4 text-sm text-slate-300;
+  }
+
+  .app-map-page {
+    @apply p-4 md:p-6 lg:p-8;
+  }
+
+  .app-map-shell {
+    @apply mx-auto flex max-w-7xl flex-col gap-5;
+  }
+
+  .app-map-header {
+    @apply flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between;
+  }
+
+  .app-map-kicker {
+    @apply text-[10px] font-bold uppercase tracking-[0.32em] text-sky-300/75;
+  }
+
+  .app-map-title {
+    @apply mt-1 text-3xl font-semibold tracking-tight text-white md:text-4xl;
+  }
+
+  .app-map-description {
+    @apply mt-3 max-w-2xl text-sm leading-6 text-slate-300;
+  }
+
+  .app-map-meta {
+    @apply grid grid-cols-1 gap-3 sm:grid-cols-3;
+  }
+
+  .app-map-meta-card {
+    @apply rounded-2xl border border-white/8 bg-[#1a2433] px-4 py-3 shadow-[0_20px_40px_rgba(0,0,0,0.24)];
+  }
+
+  .app-map-meta-label {
+    @apply text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400;
+  }
+
+  .app-map-meta-value {
+    @apply mt-1 text-lg font-semibold text-white;
+  }
+
+  .app-map-meta-note {
+    @apply mt-1 text-xs text-slate-400;
+  }
+
+  .app-map-card {
+    @apply overflow-hidden rounded-[28px] border border-white/8 bg-[#09111d] shadow-[0_30px_80px_rgba(0,0,0,0.34)];
+  }
+
+  .app-map-stage {
+    @apply relative h-[min(78vh,900px)] min-h-[620px] overflow-hidden;
+  }
+
+  .app-map-canvas {
+    @apply h-full w-full bg-[#dfe8f1];
+  }
+
+  .leaflet-container {
+    @apply h-full w-full bg-[#dfe8f1] text-slate-900;
+  }
+
+  .leaflet-control-zoom {
+    @apply overflow-hidden rounded-2xl border border-white/10 bg-[#0d1624] shadow-[0_18px_40px_rgba(0,0,0,0.28)];
+  }
+
+  .leaflet-control-zoom a {
+    @apply h-10 w-10 border-0 bg-transparent text-white;
+  }
+
+  .leaflet-control-zoom a:hover {
+    @apply bg-white/10;
+  }
+
+  .leaflet-control-attribution {
+    @apply rounded-tl-xl border border-white/10 bg-[#0d1624]/85 px-3 py-1 text-[10px] text-slate-300;
+  }
+
+  .leaflet-tooltip.app-map-tooltip {
+    @apply rounded-xl border border-white/10 bg-[#0d1624]/95 px-3 py-2 text-xs font-medium text-white shadow-lg;
+  }
+
+  .app-map-overlay {
+    @apply absolute z-[400] max-w-sm rounded-2xl border border-white/10 bg-[#0d1624]/88 p-4 shadow-[0_18px_40px_rgba(0,0,0,0.3)] backdrop-blur-md;
+  }
+
+  .app-map-overlay--left {
+    @apply left-4 top-4;
+  }
+
+  .app-map-overlay--legend {
+    @apply bottom-4 left-4 right-auto top-auto w-[min(90vw,360px)];
+  }
+
+  .app-map-overlay--bottom {
+    @apply bottom-4 left-4 right-4 sm:right-auto sm:max-w-xl;
+  }
+
+  .app-map-overlay--info {
+    @apply bottom-4 right-4 left-auto top-auto w-[min(90vw,320px)];
+  }
+
+  .app-map-overlay--compact {
+    @apply p-3;
+  }
+
+  .app-map-overlay--compact .app-map-panel-value {
+    @apply mt-1 text-xl;
+  }
+
+  .app-map-overlay--compact .app-map-panel-copy {
+    @apply mt-1 text-xs leading-5;
+  }
+
+  .app-map-overlay--compact .app-map-chip-row {
+    @apply mt-3 gap-1.5;
+  }
+
+  .app-map-overlay--compact .app-map-chip {
+    @apply px-2.5 py-1 text-[9px] tracking-[0.16em];
+  }
+
+  .app-map-overlay--compact .app-map-legend {
+    @apply mt-3 gap-1.5 sm:grid-cols-1;
+  }
+
+  .app-map-overlay--compact .app-map-legend-item {
+    @apply px-2.5 py-1.5;
+  }
+
+  .app-map-overlay--compact .app-map-legend-label {
+    @apply text-[11px] tracking-[0.14em];
+  }
+
+  .app-map-overlay--compact .app-map-legend-count {
+    @apply text-[11px];
+  }
+
+  .app-map-panel-title {
+    @apply text-[10px] font-bold uppercase tracking-[0.24em] text-slate-300/70;
+  }
+
+  .app-map-panel-value {
+    @apply mt-2 text-2xl font-semibold text-white;
+  }
+
+  .app-map-panel-copy {
+    @apply mt-2 text-sm leading-6 text-slate-300;
+  }
+
+  .app-map-legend {
+    @apply mt-4 grid gap-2 sm:grid-cols-2;
+  }
+
+  .app-map-legend-item {
+    @apply flex items-center justify-between gap-3 rounded-xl border border-white/8 bg-white/5 px-3 py-2;
+  }
+
+  .app-map-legend-left {
+    @apply flex items-center gap-2;
+  }
+
+  .app-map-legend-swatch {
+    @apply h-3 w-3 rounded-full ring-2 ring-white/20;
+  }
+
+  .app-map-legend-label {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-slate-100;
+  }
+
+  .app-map-legend-count {
+    @apply text-xs text-slate-400;
+  }
+
+  .app-map-chip-row {
+    @apply mt-4 flex flex-wrap gap-2;
+  }
+
+  .app-map-chip {
+    @apply inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-200;
+  }
+
+  .app-map-chip--red {
+    @apply border-red-500/50 text-red-300;
+  }
+
+  .app-map-chip--blue {
+    @apply border-sky-500/50 text-sky-300;
+  }
+
+  .app-map-chip--orange {
+    @apply border-orange-500/50 text-orange-300;
+  }
+
+  .app-map-chip--amber {
+    @apply border-amber-500/50 text-amber-300;
+  }
+
+  .app-map-chip--rose {
+    @apply border-rose-500/50 text-rose-300;
   }
 }
 
