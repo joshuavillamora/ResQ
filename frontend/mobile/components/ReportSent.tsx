@@ -14,6 +14,9 @@ type Props = {
   visible: boolean;
   disaster: number | null;
   onClose?: () => void;
+  onMarkSafe?: () => void;
+  onOpenRoute?: () => void;
+  submitting?: boolean;
 };
 
 const disasterMap: Record<number, string> = {
@@ -25,7 +28,7 @@ const disasterMap: Record<number, string> = {
   6: "Landslide",
 };
 
-export default function ReportSent({ visible, disaster, onClose }: Props) {
+export default function ReportSent({ visible, disaster, onClose, onMarkSafe, onOpenRoute, submitting = false }: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(40)).current;
 
@@ -96,7 +99,9 @@ export default function ReportSent({ visible, disaster, onClose }: Props) {
         ]}
       >
         <Text style={styles.title}>
-          {disaster
+          {submitting
+            ? "Sending your report..."
+            : disaster
             ? `${disasterMap[disaster]} report sent`
             : "Your report has been sent"}
         </Text>
@@ -110,11 +115,11 @@ export default function ReportSent({ visible, disaster, onClose }: Props) {
 
         {/* buttons */}
         <View style={styles.buttonRow}>
-          <TouchableOpacity onPress={onClose} style={styles.safeBtn}>
-            <Text>Mark as Safe</Text>
+          <TouchableOpacity onPress={onMarkSafe ?? onClose} style={styles.safeBtn} disabled={submitting}>
+            <Text>{submitting ? "Please wait" : "Mark as Safe"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.routeBtn}>
+          <TouchableOpacity style={styles.routeBtn} onPress={onOpenRoute} disabled={submitting}>
             <Text style={{ color: "#fff" }}>Open Route</Text>
           </TouchableOpacity>
         </View>

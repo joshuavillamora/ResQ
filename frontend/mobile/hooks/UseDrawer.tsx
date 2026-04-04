@@ -10,6 +10,25 @@ type DrawerContextValue = {
 
   selectedDisaster: number | null;
   setSelectedDisaster: (value: number | null) => void;
+
+  latestReport: {
+    id: number;
+    editToken: string;
+    disasterLabel: string;
+    barangay: string;
+    latitude: number;
+    longitude: number;
+  } | null;
+  setLatestReport: (
+    value: {
+      id: number;
+      editToken: string;
+      disasterLabel: string;
+      barangay: string;
+      latitude: number;
+      longitude: number;
+    } | null,
+  ) => void;
 };
 
 const DrawerContext = createContext<DrawerContextValue | null>(null);

@@ -3,13 +3,13 @@ import useDrawer, { DrawerProvider } from '@/hooks/UseDrawer';
 import Menu from '@/components/Menu';
 import ReportSent from "@/components/ReportSent";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Image, Pressable, View } from 'react-native';
 
 const AnimatedTabs = () => {
   const { colors } = useTheme();
-  const { menuOpen, closeMenu, overlayVisible, setOverlayVisible, selectedDisaster } = useDrawer();
+  const { menuOpen, closeMenu, overlayVisible, setOverlayVisible, selectedDisaster, latestReport, setLatestReport } = useDrawer();
   const menuAnimation = useRef(new Animated.Value(0)).current;
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
@@ -80,6 +80,26 @@ const AnimatedTabs = () => {
     opacity: focused ? 1 : 0.7,
     tintColor: focused ? '#FF8800' : '#FFFFFF',
   });
+
+  const handleMarkSafe = () => {
+    if (latestReport) {
+      setOverlayVisible(false);
+      router.push({
+        pathname: "/reportUpdate",
+        params: {
+          reportId: String(latestReport.id),
+          editToken: latestReport.editToken,
+          disasterLabel: latestReport.disasterLabel,
+          barangay: latestReport.barangay,
+          latitude: String(latestReport.latitude),
+          longitude: String(latestReport.longitude),
+        },
+      });
+      return;
+    }
+
+    setOverlayVisible(false);
+  };
 
   return (
     <LinearGradient colors={menuOpen ? ['#2e0a0a', '#2e0a0a'] : colors.gradients.background} style={{ flex: 1 }}>
@@ -243,6 +263,7 @@ const AnimatedTabs = () => {
               visible={overlayVisible}
               disaster={selectedDisaster}
               onClose={() => setOverlayVisible(false)}
+              onMarkSafe={handleMarkSafe}
             />
           </View>
         )}
@@ -256,6 +277,14 @@ const TabsLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [selectedDisaster, setSelectedDisaster] = useState<number | null>(null);
+  const [latestReport, setLatestReport] = useState<{
+    id: number;
+    editToken: string;
+    disasterLabel: string;
+    barangay: string;
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
@@ -273,7 +302,9 @@ const TabsLayout = () => {
       overlayVisible,
       setOverlayVisible,
       selectedDisaster,
-      setSelectedDisaster
+      setSelectedDisaster,
+      latestReport,
+      setLatestReport,
     }}>
       <AnimatedTabs />
     </DrawerProvider>
