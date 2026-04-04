@@ -8,8 +8,10 @@ import time
 from datetime import datetime, timedelta
 from math import asin, cos, radians, sin, sqrt
 from typing import Optional
+from urllib.parse import parse_qs
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, WebSocket, WebSocketDisconnect, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, WebSocket, WebSocketDisconnect, status
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 try:
@@ -27,6 +29,13 @@ app = FastAPI(title="ResQ Backend")
 
 models.Base.metadata.create_all(bind=engine)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 SECRET_KEY = os.getenv("SECRET_KEY", "resq-secret-key")
 STAFF_SETUP_KEY = os.getenv("STAFF_SETUP_KEY")
 TOKEN_HOURS = int(os.getenv("TOKEN_HOURS", "24"))
@@ -35,12 +44,19 @@ ALLOWED_DISASTER_TYPES = {
     "flood",
     "fire",
     "landslide",
-    "typhoon damage",
+    "typhoon",
     "earthquake",
     "medical emergency",
+    "volcano",
+}
+DISASTER_TYPE_ALIASES = {
+    "typhoon damage": "typhoon",
+    "medical": "medical emergency",
 }
 ALLOWED_SEVERITY = {"low", "medium", "high"}
 STAFF_ROLES = {"responder", "station_admin"}
+ALLOWED_REPORT_STATUSES = {"unverified", "verified", "responding", "resolved", "false_report"}
+ALLOWED_SOURCES = {"api", "sms"}
 
 
 class ConnectionManager:
@@ -133,6 +149,7 @@ def decode_token(token: str) -> dict:
 
 def normalize_disaster_type(disaster_type: str) -> str:
     clean_value = " ".join(disaster_type.strip().lower().replace("_", " ").split())
+    clean_value = DISASTER_TYPE_ALIASES.get(clean_value, clean_value)
     if clean_value not in ALLOWED_DISASTER_TYPES:
         raise HTTPException(status_code=400, detail="Invalid disaster type")
     return clean_value
@@ -149,6 +166,20 @@ def clean_required_text(value: str, field_name: str) -> str:
     clean_value = value.strip()
     if not clean_value:
         raise HTTPException(status_code=400, detail=f"{field_name} is required")
+    return clean_value
+
+
+def normalize_status(report_status: str) -> str:
+    clean_value = report_status.strip().lower().replace(" ", "_")
+    if clean_value not in ALLOWED_REPORT_STATUSES:
+        raise HTTPException(status_code=400, detail="Invalid report status")
+    return clean_value
+
+
+def normalize_source(source: str) -> str:
+    clean_value = source.strip().lower()
+    if clean_value not in ALLOWED_SOURCES:
+        raise HTTPException(status_code=400, detail="Invalid source")
     return clean_value
 
 
@@ -203,6 +234,24 @@ def refresh_confidence_for_same_type(db: Session, disaster_type: str):
 
     db.commit()
 
+
+def apply_report_filters(
+    query,
+    disaster_type: Optional[str] = None,
+    report_status: Optional[str] = None,
+    barangay: Optional[str] = None,
+    source: Optional[str] = None,
+):
+    if disaster_type:
+        query = query.filter(models.Report.disaster_type == normalize_disaster_type(disaster_type))
+    if report_status:
+        query = query.filter(models.Report.status == normalize_status(report_status))
+    if barangay:
+        query = query.filter(models.Report.barangay.ilike(f"%{barangay.strip()}%"))
+    if source:
+        query = query.filter(models.Report.source == normalize_source(source))
+    return query
+
 # ------------------------ DATA SERIALIZATION ------------------------
 
 def user_to_dict(user: models.User) -> dict:
@@ -215,7 +264,11 @@ def user_to_dict(user: models.User) -> dict:
     }
 
 
-def report_to_dict(report: models.Report, include_edit_token: bool = False) -> dict:
+def report_to_dict(
+    report: models.Report,
+    include_edit_token: bool = False,
+    include_reporter: bool = True,
+) -> dict:
     data = {
         "id": report.id,
         "user_id": report.user_id,
@@ -234,7 +287,7 @@ def report_to_dict(report: models.Report, include_edit_token: bool = False) -> d
         "updated_at": report.updated_at.isoformat() if report.updated_at else None,
     }
 
-    if report.user:
+    if include_reporter and report.user:
         data["reporter"] = {
             "id": report.user.id,
             "name": report.user.name,
@@ -336,6 +389,11 @@ def root():
     return {"message": "ResQ backend is running"}
 
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+
 @app.post("/register")
 def register_user(
     request: schemas.RegisterRequest,
@@ -382,6 +440,11 @@ def login_user(request: schemas.LoginRequest, db: Session = Depends(get_db)):
         "token": create_token(user),
         "user": user_to_dict(user),
     }
+
+
+@app.get("/me")
+def get_me(current_user: models.User = Depends(get_current_user)):
+    return user_to_dict(current_user)
 
 
 @app.post("/report")
@@ -453,6 +516,20 @@ async def update_report(
     return report_data
 
 
+@app.get("/reports/mine")
+def get_my_reports(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    reports = (
+        db.query(models.Report)
+        .filter(models.Report.user_id == current_user.id)
+        .order_by(models.Report.created_at.desc())
+        .all()
+    )
+    return [report_to_dict(report) for report in reports]
+
+
 @app.get("/reports")
 def get_reports(
     disaster_type: Optional[str] = None,
@@ -465,18 +542,29 @@ def get_reports(
     require_staff(current_user)
 
     query = db.query(models.Report).order_by(models.Report.created_at.desc())
-
-    if disaster_type:
-        query = query.filter(models.Report.disaster_type == normalize_disaster_type(disaster_type))
-    if report_status:
-        query = query.filter(models.Report.status == report_status.strip().lower())
-    if barangay:
-        query = query.filter(models.Report.barangay.ilike(f"%{barangay.strip()}%"))
-    if source:
-        query = query.filter(models.Report.source == source.strip().lower())
+    query = apply_report_filters(query, disaster_type, report_status, barangay, source)
 
     reports = query.all()
     return [report_to_dict(report) for report in reports]
+
+
+@app.get("/reports/feed")
+def get_public_reports(
+    limit: int = Query(default=50, ge=1, le=200),
+    disaster_type: Optional[str] = None,
+    report_status: Optional[str] = Query(default=None, alias="status"),
+    barangay: Optional[str] = None,
+    source: Optional[str] = None,
+    db: Session = Depends(get_db),
+):
+    query = (
+        db.query(models.Report)
+        .filter(models.Report.status != "false_report")
+        .order_by(models.Report.created_at.desc())
+    )
+    query = apply_report_filters(query, disaster_type, report_status, barangay, source)
+    reports = query.limit(limit).all()
+    return [report_to_dict(report, include_reporter=False) for report in reports]
 
 
 @app.get("/reports/{report_id}")
@@ -495,9 +583,28 @@ def get_report(
 
 
 @app.post("/sms")
-async def create_sms_report(request: schemas.SMSRequest, db: Session = Depends(get_db)):
+async def create_sms_report(request: Request, db: Session = Depends(get_db)):
+    sms_message = ""
+
+    content_type = request.headers.get("content-type", "").lower()
+
+    if "application/json" in content_type:
+        payload = await request.json()
+        sms_message = payload.get("sms", "") if isinstance(payload, dict) else ""
+    elif "application/x-www-form-urlencoded" in content_type:
+        parsed_form = parse_qs((await request.body()).decode())
+        sms_message = (
+            (parsed_form.get("sms") or [""])[0]
+            or (parsed_form.get("Body") or [""])[0]
+            or (parsed_form.get("body") or [""])[0]
+            or (parsed_form.get("message") or [""])[0]
+        )
+    else:
+        raw_body = await request.body()
+        sms_message = raw_body.decode().strip()
+
     try:
-        parsed_sms = parse_sms_message(clean_required_text(request.sms, "sms"))
+        parsed_sms = parse_sms_message(clean_required_text(sms_message, "sms"))
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
 
@@ -651,6 +758,29 @@ def create_hotline(
     db.refresh(new_hotline)
 
     return hotline_to_dict(new_hotline)
+
+
+@app.get("/responders")
+def get_responders(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    require_staff(current_user)
+
+    responders = (
+        db.query(models.User)
+        .filter(models.User.role.in_(list(STAFF_ROLES)))
+        .order_by(models.User.created_at.asc())
+        .all()
+    )
+    return [
+        {
+            **user_to_dict(responder),
+            "verification_count": len(responder.verifications),
+            "report_count": len(responder.reports),
+        }
+        for responder in responders
+    ]
 
 
 @app.websocket("/ws/reports")

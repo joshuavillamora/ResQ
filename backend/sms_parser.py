@@ -1,37 +1,55 @@
 """
-    Formats an SMS text message into a structured report dictionary.
+Simple SMS parser for offline disaster reports.
 
-    Expected SMS format: "TYPE|LAT|LNG|USERID|BARANGAY"
-    Example: "flood|10.123|123.456|42|Barangay Uno"
+Supported formats:
+1. TYPE|LAT|LNG|USERID|BARANGAY
+2. TYPE|USERID|LAT|LNG|BARANGAY
+
+Examples:
+- FLOOD|10.123|123.456|42|Barangay Uno
+- FLOOD|UserID42|10.123|123.456|Barangay Uno
 """
-def parse_sms_message(message: str):
 
-    # Split the SMS by "|" and remove extra whitespace from each part
+
+def parse_user_id(raw_value: str):
+    clean_value = raw_value.strip()
+    if not clean_value:
+        return None
+
+    lowered = clean_value.lower()
+    if lowered.startswith("userid"):
+        clean_value = clean_value[6:].strip()
+
+    try:
+        return int(clean_value)
+    except ValueError as error:
+        raise ValueError("USERID must be a number, UserID<number>, or blank") from error
+
+
+def parse_sms_message(message: str):
     parts = [part.strip() for part in message.split("|")]
 
     if len(parts) != 5:
-        raise ValueError("SMS format must be TYPE|LAT|LNG|USERID|BARANGAY")
+        raise ValueError("SMS format must have 5 parts separated by |")
 
-    disaster_type, latitude, longitude, user_id, barangay = parts
+    disaster_type = parts[0]
+    barangay = parts[4]
 
-    # Check for missing required fields (disaster_type, latitude, longitude, barangay)
-    if not disaster_type or not latitude or not longitude or not barangay:
+    if not disaster_type or not barangay:
         raise ValueError("SMS has missing required values")
 
-    parsed_user_id = None
-    if user_id:
-        try:
-            parsed_user_id = int(user_id)
-        except ValueError as error:
-            raise ValueError("USERID must be a number or blank") from error
-
     try:
-        parsed_latitude = float(latitude)
-        parsed_longitude = float(longitude)
-    except ValueError as error:
-        raise ValueError("LAT and LNG must be numbers") from error
+        parsed_latitude = float(parts[1])
+        parsed_longitude = float(parts[2])
+        parsed_user_id = parse_user_id(parts[3])
+    except ValueError:
+        parsed_user_id = parse_user_id(parts[1])
+        try:
+            parsed_latitude = float(parts[2])
+            parsed_longitude = float(parts[3])
+        except ValueError as error:
+            raise ValueError("LAT and LNG must be numbers") from error
 
-    # Return the parsed SMS as a dictionary
     return {
         "disaster_type": disaster_type,
         "latitude": parsed_latitude,
