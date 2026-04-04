@@ -2,6 +2,9 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Get database URL from env variables.
 # Supports either DATABASE_URL or NEON_DATABASE_URL for cloud DB.
@@ -10,6 +13,10 @@ DATABASE_URL = os.getenv("DATABASE_URL") or os.getenv("NEON_DATABASE_URL")
 # Fallback to local SQLite database if no env variable is set.
 if not DATABASE_URL:
     DATABASE_URL = "sqlite:///./resq.db"
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+elif DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
 
 engine_options = {}
 if DATABASE_URL.startswith("sqlite"):
