@@ -7,7 +7,7 @@ import {
   Animated,
   Easing,
   Image,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 
 type Props = {
@@ -28,13 +28,19 @@ const disasterMap: Record<number, string> = {
   6: "Landslide",
 };
 
-export default function ReportSent({ visible, disaster, onClose, onMarkSafe, onOpenRoute, submitting = false }: Props) {
+export default function ReportSent({
+  visible,
+  disaster,
+  onClose,
+  onMarkSafe,
+  onOpenRoute,
+  submitting = false,
+}: Props) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(40)).current;
 
   useEffect(() => {
     if (visible) {
-      // reset before animating in
       fadeAnim.setValue(0);
       translateY.setValue(40);
 
@@ -53,14 +59,13 @@ export default function ReportSent({ visible, disaster, onClose, onMarkSafe, onO
         }),
       ]).start();
     } else {
-      // animate out
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 250,
         useNativeDriver: true,
       }).start();
     }
-  }, [visible]);
+  }, [fadeAnim, translateY, visible]);
 
   return (
     <Animated.View
@@ -68,14 +73,12 @@ export default function ReportSent({ visible, disaster, onClose, onMarkSafe, onO
       style={[
         styles.overlay,
         {
-          opacity: fadeAnim, // 👈 whole screen fades
+          opacity: fadeAnim,
         },
       ]}
     >
-      {/* 🔥 Optional Blur Background */}
       <BlurView intensity={50} style={StyleSheet.absoluteFill} />
 
-      {/* LOGO */}
       <Animated.Image
         source={require("@/assets/images/resq-logo-with-wordmark.png")}
         style={[
@@ -88,7 +91,6 @@ export default function ReportSent({ visible, disaster, onClose, onMarkSafe, onO
         resizeMode="contain"
       />
 
-      {/* CONTENT */}
       <Animated.View
         style={[
           styles.content,
@@ -102,27 +104,43 @@ export default function ReportSent({ visible, disaster, onClose, onMarkSafe, onO
           {submitting
             ? "Sending your report..."
             : disaster
-            ? `${disasterMap[disaster]} report sent`
-            : "Your report has been sent"}
+              ? `${disasterMap[disaster]} report has been sent!`
+              : "Your report has been sent!"}
         </Text>
 
-        {/* checklist */}
         <View style={styles.checklist}>
           <Text style={styles.check}>✔ Location captured</Text>
           <Text style={styles.check}>✔ Report delivered</Text>
           <Text style={styles.check}>✔ Authorities notified</Text>
         </View>
 
-        {/* buttons */}
-        <View style={styles.buttonRow}>
-          <TouchableOpacity onPress={onMarkSafe ?? onClose} style={styles.safeBtn} disabled={submitting}>
-            <Text>{submitting ? "Please wait" : "Mark as Safe"}</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={onMarkSafe ?? onClose}
+          style={[styles.button, submitting ? styles.buttonDisabled : null]}
+          disabled={submitting}
+        >
+          <View style={styles.buttonInner}>
+            <Text style={styles.btnText}>{submitting ? "Please wait" : "Mark as Safe"}</Text>
+            <Image
+              source={require("@/assets/images/checkmark.png")}
+              style={{ width: 27, height: 30, marginLeft: "auto", top: 4, marginRight: 4 }}
+            />
+          </View>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.routeBtn} onPress={onOpenRoute} disabled={submitting}>
-            <Text style={{ color: "#fff" }}>Open Route</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={onOpenRoute}
+          style={[styles.button, submitting ? styles.buttonDisabled : null]}
+          disabled={submitting}
+        >
+          <View style={styles.buttonInner}>
+            <Text style={styles.btnText}>Open Route</Text>
+            <Image
+              source={require("@/assets/images/map.png")}
+              style={{ width: 25, height: 26, marginLeft: "auto", top: 2, marginRight: 5 }}
+            />
+          </View>
+        </TouchableOpacity>
       </Animated.View>
     </Animated.View>
   );
@@ -135,43 +153,76 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(255,51,51,0.9)", // slightly transparent for nicer overlay
+    backgroundColor: "rgba(255,51,51,0.9)",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 999,
   },
   logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
+    width: 160,
+    height: 160,
   },
   content: {
     alignItems: "center",
+    width: "100%",
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#F5F5F5",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
   checklist: {
-    marginTop: 12,
+    width: "85%",
+    height: 480,
+    backgroundColor: "#1F2937",
+    marginTop: 32,
+    borderRadius: 12,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    justifyContent: "center",
+    gap: 18,
   },
   check: {
     color: "#fff",
+    fontSize: 20,
+    fontWeight: "600",
   },
-  buttonRow: {
+  button: {
+    backgroundColor: "#430A0A",
+    padding: 10,
+    margin: 4,
+    borderRadius: 25,
+    width: 225,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonInner: {
     flexDirection: "row",
-    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
-  safeBtn: {
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-  routeBtn: {
-    backgroundColor: "#000",
-    padding: 10,
-    borderRadius: 8,
+  btnText: {
+    position: "absolute",
+    color: "white",
+    textAlign: "center",
+    fontWeight: "600",
+    fontSize: 24,
+    lineHeight: 15,
+    left: 0,
+    right: 20,
+    bottom: 8,
   },
 });
