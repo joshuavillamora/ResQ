@@ -159,6 +159,7 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
 export default function DashboardPage() {
   const [reports, setReports] = useState<BackendReport[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [chartsReady, setChartsReady] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -183,6 +184,10 @@ export default function DashboardPage() {
     return () => {
       active = false;
     };
+  }, []);
+
+  useEffect(() => {
+    setChartsReady(true);
   }, []);
 
   const summaryCards = useMemo<SummaryCard[]>(() => {
@@ -312,24 +317,28 @@ export default function DashboardPage() {
           <div className="xl:col-span-2">
             <ChartCard title="Reports Over Time">
               <div className="app-chart-area">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={lineData} margin={chartTheme.lineMargin}>
-                    <CartesianGrid stroke={chartTheme.gridStroke} vertical={false} />
-                    <XAxis dataKey="name" stroke={chartTheme.axisStroke} tickLine={false} axisLine={false} />
-                    <YAxis stroke={chartTheme.axisStroke} tickLine={false} axisLine={false} />
-                    <Tooltip content={<ChartTooltip />} />
-                    {reportSeries.map((series) => (
-                      <Line
-                        key={series.dataKey}
-                        type="monotone"
-                        dataKey={series.dataKey}
-                        stroke={series.stroke}
-                        strokeWidth={3}
-                        dot={false}
-                      />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
+                {chartsReady ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={lineData} margin={chartTheme.lineMargin}>
+                      <CartesianGrid stroke={chartTheme.gridStroke} vertical={false} />
+                      <XAxis dataKey="name" stroke={chartTheme.axisStroke} tickLine={false} axisLine={false} />
+                      <YAxis stroke={chartTheme.axisStroke} tickLine={false} axisLine={false} />
+                      <Tooltip content={<ChartTooltip />} />
+                      {reportSeries.map((series) => (
+                        <Line
+                          key={series.dataKey}
+                          type="monotone"
+                          dataKey={series.dataKey}
+                          stroke={series.stroke}
+                          strokeWidth={3}
+                          dot={false}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="app-card-body">Preparing chart...</div>
+                )}
               </div>
             </ChartCard>
           </div>
@@ -337,16 +346,20 @@ export default function DashboardPage() {
           <ChartCard title="Disaster Types">
             <div className="app-donut-layout">
               <div className="app-donut-plot">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={disasterData} dataKey="value" innerRadius={48} outerRadius={72} paddingAngle={2}>
-                      {disasterData.map((entry) => (
-                        <Cell key={entry.name} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<ChartTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
+                {chartsReady ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={disasterData} dataKey="value" innerRadius={48} outerRadius={72} paddingAngle={2}>
+                        {disasterData.map((entry) => (
+                          <Cell key={entry.name} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<ChartTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="app-card-body">Preparing chart...</div>
+                )}
               </div>
               <div className="app-donut-legend">
                 {disasterData.map((item) => (
