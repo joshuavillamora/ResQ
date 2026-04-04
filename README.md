@@ -25,3 +25,11 @@ uvicorn backend.main:app --reload
 - Public registration is for civilians by default.
 - If you want to create responder or station admin accounts using `/register`, send an `X-Setup-Key` header that matches `STAFF_SETUP_KEY`.
 - This version uses SQLAlchemy `create_all`, so it works best on a fresh Neon schema or database.
+
+## Frontend integration notes
+
+- Web login uses the backend `/login` route and expects a responder or station admin account.
+- Web dashboard, reports, map, responders, and settings read from the FastAPI backend.
+- Mobile civilian screens now use the backend for report creation, report update, report history, hotlines, map feed, and profile login/register.
+- Set `frontend/mobile/app.json` `expo.extra.resqApiBaseUrl` to the backend URL your phone or emulator can reach.
+- The mobile responder or dispatch app is not part of this version of the project.
