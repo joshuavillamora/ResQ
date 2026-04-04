@@ -40,6 +40,9 @@
         }
       ]
     ],
+    "extra": {
+      "resqApiBaseUrl": "http://127.0.0.1:8000"
+    },
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
