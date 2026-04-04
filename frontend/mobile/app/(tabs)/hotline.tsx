@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ImageBackground, Text, StyleSheet, TouchableOpacity, ScrollView, View } from 'react-native';
 import Header from '@/components/Header';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import useDrawer from '@/hooks/UseDrawer';
+import useTheme from '@/hooks/UseTheme';
+import { createHomeStyles } from '@/assets/styles/home.style';
 
 const Hotline = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const handleMenuToggle = () => {
-    setMenuOpen(prev => !prev);
-  };
+  const { menuOpen, toggleMenu } = useDrawer();
+  const { colors } = useTheme();
+  const homestyle = createHomeStyles(colors);
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-      <ImageBackground
+  <ImageBackground
         source={require('@/assets/images/bg.png')}
         style={{ flex: 1 }}
         resizeMode="cover"
       >
-        <Header menuOpen={menuOpen} onMenuToggle={handleMenuToggle} />
+      <SafeAreaView style={homestyle.safeArea}>
+        <Header menuOpen={menuOpen} onMenuToggle={toggleMenu} />
         <View style={{ height: 90 }} />
 
         <ScrollView 
@@ -54,8 +55,9 @@ const Hotline = () => {
             mobile="Western Visayas Medical Center: 321-2841"
           />
         </ScrollView>
-      </ImageBackground>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
+    
   );
 };
 
