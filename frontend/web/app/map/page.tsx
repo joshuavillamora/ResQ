@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import L from "leaflet";
 
-import { fetchReports, normalizeStatusLabel, type BackendReport } from "@/lib/api";
+import { fetchReports, normalizeDisasterLabel, normalizeStatusLabel, type BackendReport } from "@/lib/api";
 
-type ZoneTone = "fire" | "flood" | "typhoon" | "landslide" | "volcano";
+type ZoneTone = "fire" | "flood" | "typhoon" | "landslide" | "volcano" | "earthquake" | "medical";
 
 type Zone = {
   name: string;
@@ -30,6 +29,8 @@ const legendConfig: Array<Omit<LegendItem, "count">> = [
   { label: "Flood", tone: "flood", subtitle: "Water accumulation" },
   { label: "Typhoon", tone: "typhoon", subtitle: "Wind coverage" },
   { label: "Landslide", tone: "landslide", subtitle: "Slope movement" },
+  { label: "Earthquake", tone: "earthquake", subtitle: "Ground movement" },
+  { label: "Medical Emergency", tone: "medical", subtitle: "Priority medical help" },
   { label: "Volcano", tone: "volcano", subtitle: "Heat anomaly" },
 ];
 
@@ -39,6 +40,8 @@ const toneClassMap: Record<ZoneTone, string> = {
   typhoon: "app-map-chip--orange",
   landslide: "app-map-chip--amber",
   volcano: "app-map-chip--rose",
+  earthquake: "app-map-chip--violet",
+  medical: "app-map-chip--green",
 };
 
 function toneFromDisaster(disasterType: string): ZoneTone {
@@ -54,12 +57,16 @@ function toneFromDisaster(disasterType: string): ZoneTone {
     return "landslide";
   }
 
-  if (disasterType.includes("typhoon")) {
-    return "typhoon";
+  if (disasterType === "earthquake") {
+    return "earthquake";
   }
 
-  if (disasterType.includes("earthquake")) {
-    return "volcano";
+  if (disasterType === "medical emergency") {
+    return "medical";
+  }
+
+  if (disasterType.includes("typhoon")) {
+    return "typhoon";
   }
 
   return "volcano";
@@ -80,6 +87,14 @@ function zonePalette(tone: ZoneTone): { fillColor: string; borderColor: string }
 
   if (tone === "typhoon") {
     return { fillColor: "#f7a85a", borderColor: "#f59e0b" };
+  }
+
+  if (tone === "earthquake") {
+    return { fillColor: "#9b8cff", borderColor: "#8b5cf6" };
+  }
+
+  if (tone === "medical") {
+    return { fillColor: "#34d399", borderColor: "#10b981" };
   }
 
   return { fillColor: "#ff4b6e", borderColor: "#ef4444" };
@@ -119,6 +134,7 @@ export default function MapPage() {
   const verifiedCount = useMemo(() => reports.filter((report) => report.status === "verified").length, [reports]);
   const hotspotCount = zones.length;
   const affectedBarangays = useMemo(() => new Set(reports.map((report) => report.barangay)).size, [reports]);
+  const activeHazardTypes = useMemo(() => new Set(reports.map((report) => normalizeDisasterLabel(report.disaster_type))).size, [reports]);
 
   useEffect(() => {
     let active = true;
@@ -150,83 +166,96 @@ export default function MapPage() {
       return;
     }
 
-    const map = L.map(mapContainerRef.current, {
-      center: [10.7086, 122.5652],
-      zoom: 13.7,
-      zoomControl: true,
-      zoomSnap: 0.1,
-      zoomDelta: 0.5,
-    });
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      minZoom: 11,
-      className: "app-map-tiles",
-    }).addTo(map);
-
-    const shapes = L.featureGroup();
-
-    zones.forEach((zone) => {
-      L.circle([zone.lat, zone.lng], {
-        radius: zone.radius,
-        color: zone.borderColor,
-        fillColor: zone.fillColor,
-        fillOpacity: 0.45,
-        opacity: 0.9,
-        weight: 1.5,
-      })
-        .bindTooltip(`${zone.name}<br/>${zone.note}`, {
-          direction: "top",
-          offset: [0, -6],
-          opacity: 1,
-          sticky: true,
-          className: "app-map-tooltip",
-        })
-        .addTo(shapes);
-    });
-
-    shapes.addTo(map);
-
-    const bounds = shapes.getBounds();
-    if (bounds.isValid()) {
-      map.fitBounds(bounds.pad(0.2), {
-        animate: false,
-        maxZoom: 14.1,
-      });
-    } else {
-      map.setView([10.7086, 122.5652], 13.7);
-    }
-
     let isDisposed = false;
+    let resizeObserver: ResizeObserver | null = null;
     let resizeRaf = 0;
+    let map: any = null;
 
-    const safeInvalidateSize = () => {
-      if (isDisposed) {
+    const setupMap = async () => {
+      const leafletModule = await import("leaflet");
+      const L = leafletModule.default ?? leafletModule;
+
+      if (isDisposed || !mapContainerRef.current) {
         return;
       }
 
-      resizeRaf = requestAnimationFrame(() => {
-        if (isDisposed) {
+      map = L.map(mapContainerRef.current, {
+        center: [10.7086, 122.5652],
+        zoom: 13.7,
+        zoomControl: true,
+        zoomSnap: 0.1,
+        zoomDelta: 0.5,
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        minZoom: 11,
+        className: "app-map-tiles",
+      }).addTo(map);
+
+      const shapes = L.featureGroup();
+
+      zones.forEach((zone) => {
+        L.circle([zone.lat, zone.lng], {
+          radius: zone.radius,
+          color: zone.borderColor,
+          fillColor: zone.fillColor,
+          fillOpacity: 0.45,
+          opacity: 0.9,
+          weight: 1.5,
+        })
+          .bindTooltip(`${zone.name}<br/>${zone.note}`, {
+            direction: "top",
+            offset: [0, -6],
+            opacity: 1,
+            sticky: true,
+            className: "app-map-tooltip",
+          })
+          .addTo(shapes);
+      });
+
+      shapes.addTo(map);
+
+      const bounds = shapes.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds.pad(0.2), {
+          animate: false,
+          maxZoom: 14.1,
+        });
+      } else {
+        map.setView([10.7086, 122.5652], 13.7);
+      }
+
+      const safeInvalidateSize = () => {
+        if (isDisposed || !map) {
           return;
         }
 
-        map.invalidateSize();
+        resizeRaf = requestAnimationFrame(() => {
+          if (isDisposed || !map) {
+            return;
+          }
+
+          map.invalidateSize();
+        });
+      };
+
+      safeInvalidateSize();
+
+      resizeObserver = new ResizeObserver(() => {
+        safeInvalidateSize();
       });
+
+      resizeObserver.observe(mapContainerRef.current);
     };
 
-    safeInvalidateSize();
-
-    const resizeObserver = new ResizeObserver(() => {
-      safeInvalidateSize();
-    });
-
-    resizeObserver.observe(mapContainerRef.current);
+    setupMap();
 
     return () => {
       isDisposed = true;
-      resizeObserver.disconnect();
+      resizeObserver?.disconnect();
       cancelAnimationFrame(resizeRaf);
-      map.remove();
+      map?.remove();
     };
   }, [zones]);
 
@@ -246,7 +275,7 @@ export default function MapPage() {
             <div className="app-map-meta-card">
               <p className="app-map-meta-label">Active zones</p>
               <p className="app-map-meta-value">{hotspotCount}</p>
-              <p className="app-map-meta-note">Across 5 hazard types</p>
+              <p className="app-map-meta-note">Across {activeHazardTypes || 0} hazard types</p>
             </div>
             <div className="app-map-meta-card">
               <p className="app-map-meta-label">Verified reports</p>

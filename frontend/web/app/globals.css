@@ -9,8 +9,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Consolas", "SFMono-Regular", "Courier New", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -662,6 +662,14 @@
 
   .app-map-chip--rose {
     @apply border-rose-500/50 text-rose-300;
+  }
+
+  .app-map-chip--violet {
+    @apply border-violet-500/50 text-violet-300;
+  }
+
+  .app-map-chip--green {
+    @apply border-emerald-500/50 text-emerald-300;
   }
 }
 
