@@ -1,10 +1,12 @@
 import os
+from pathlib import Path
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
 
 # Get database URL from env variables.
 # Supports either DATABASE_URL or NEON_DATABASE_URL for cloud DB.
