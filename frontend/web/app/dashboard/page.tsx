@@ -273,16 +273,18 @@ export default function DashboardPage() {
       { color: "#ff3b30", tone: "red" as const },
       { color: "#27e84f", tone: "green" as const },
       { color: "#3b82f6", tone: "blue" as const },
+      { color: "#f59e0b", tone: "red" as const },
+      { color: "#a855f7", tone: "green" as const },
+      { color: "#14b8a6", tone: "blue" as const },
     ];
 
     const entries = Array.from(counts.entries())
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
       .map(([name, value], index) => ({
         name,
         value,
-        color: palette[index]?.color ?? "#94a3b8",
-        tone: palette[index]?.tone ?? "blue",
+        color: palette[index % palette.length]?.color ?? "#94a3b8",
+        tone: palette[index % palette.length]?.tone ?? "blue",
       }));
 
     return entries.length ? entries : [{ name: "No Data", value: 1, color: "#64748b", tone: "blue" as const }];
