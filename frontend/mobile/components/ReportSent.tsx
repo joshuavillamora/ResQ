@@ -173,24 +173,6 @@ function FloodCard4() {
   );
 }
 
-function FloodCard5() {
-  return (
-    <View style={styles.checklistcard}>
-      <Text style={{
-        color: "#EEFF00",
-        fontSize: 24,
-        fontWeight: "700",
-      }}>AFTER FLOOD</Text>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 15, color: "#FFF", fontWeight: "600", flex: 1, lineHeight: 24 }}>
-          {"• Avoid floodwater contact\n• Boil water before drinking\n• Document property damage\n• Report hazards"}
-        </Text>
-        <Image source={require('@/assets/images/flood4.png')} style={{ width: 100, height: 100 }} />
-      </View>
-    </View>
-  );
-}
-
 function FireCard1() {
   return (
     <View style={styles.checklistcard}>
@@ -327,6 +309,7 @@ function FireCard5() {
 
 const disasterCards: Record<number, (() => JSX.Element)[]> = {
   1: [FloodCard1, FloodCard2, FloodCard3, FloodCard4],
+  2: [EarthquakeCard1, EarthquakeCard2, EarthquakeCard3, EarthquakeCard4],
   4: [FireCard1, FireCard2, FireCard3, FireCard4, FireCard5],
 };
 
