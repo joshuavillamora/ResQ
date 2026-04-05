@@ -1,7 +1,7 @@
 import { rememberReport, updateReport } from "@/lib/api";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 const severityOptions = ["low", "medium", "high"] as const;
 
@@ -36,10 +36,32 @@ export default function ReportUpdateScreen() {
         edit_token: params.editToken || null,
       });
 
-      await rememberReport(updatedReport);
-      Alert.alert("Report updated", "Your report details were saved successfully.");
+      try {
+        await rememberReport(updatedReport);
+      } catch (storageError) {
+        console.error("Could not cache updated report locally", storageError);
+      }
+
+      if (Platform.OS === "web") {
+        window.alert("Report updated successfully.");
+        router.replace("/reports");
+      } else {
+        Alert.alert("Report updated", "Your report details were saved successfully.", [
+          {
+            text: "OK",
+            onPress: () => router.replace("/reports"),
+          },
+        ]);
+      }
     } catch (error) {
-      Alert.alert("Update failed", error instanceof Error ? error.message : "Could not update this report.");
+      console.error("Report update failed", error);
+      const message = error instanceof Error ? error.message : "Could not update this report.";
+
+      if (Platform.OS === "web") {
+        window.alert(`Update failed: ${message}`);
+      }
+
+      Alert.alert("Update failed", message);
     } finally {
       setSubmitting(false);
     }
