@@ -100,7 +100,6 @@ export default function SettingsPage() {
 
           <div className="app-settings-badge-wrap">
             <span className="app-tone-pill app-tone-pill--green">Theme ready</span>
-            <span className="app-tone-pill app-tone-pill--blue">Saved locally</span>
           </div>
         </header>
 

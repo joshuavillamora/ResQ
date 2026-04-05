@@ -7,7 +7,6 @@ const pageNames: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/reports": "Reports",
   "/map": "Map",
-  "/responders": "Responders",
   "/settings": "Settings",
 };
 

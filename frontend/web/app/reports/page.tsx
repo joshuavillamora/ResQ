@@ -10,7 +10,7 @@ import {
   type BackendReport,
 } from "@/lib/api";
 
-type ReportType = "Medical Emergency" | "Typhoon" | "Landslide" | "Earthquake" | "Fire" | "Flood";
+type ReportType = "Typhoon" | "Landslide" | "Volcano" | "Earthquake" | "Fire" | "Flood";
 type ReportStatus = "Pending" | "Resolved" | "In Progress" | "Verified" | "False Report";
 type ReportSource = "WIFI" | "SMS";
 type Confidence = "High" | "Medium" | "Low";
@@ -27,9 +27,9 @@ type Report = {
 
 const typeOptions: Array<"ALL TYPES" | ReportType> = [
   "ALL TYPES",
-  "Medical Emergency",
   "Typhoon",
   "Landslide",
+  "Volcano",
   "Earthquake",
   "Fire",
   "Flood",
@@ -42,8 +42,8 @@ const typeColorMap: Record<ReportType, string> = {
   Fire: "app-tone-pill app-tone-pill--red",
   Flood: "app-tone-pill app-tone-pill--blue",
   Typhoon: "app-tone-pill app-tone-pill--orange",
-  "Medical Emergency": "app-tone-pill app-tone-pill--red",
   Landslide: "app-tone-pill app-tone-pill--green",
+  Volcano: "app-tone-pill app-tone-pill--rose",
 };
 
 const confidenceColorMap: Record<Confidence, string> = {
@@ -185,7 +185,7 @@ export default function ReportsPage() {
             <h2 className="app-card-title">Backend Connection Error</h2>
             <p className="app-card-body">{loadError}</p>
           </section>
-        ) : null}
+        ) : null} 
 
         <section className="app-report-card">
           <div className="app-report-table-wrap app-reports-table-wrap-tight">
