@@ -46,8 +46,21 @@ const ITEM_WIDTH = CHECKLIST_WIDTH - 40;
 function FireCard1() {
   return (
     <View style={styles.checklistcard}>
-      <Text style={styles.cardTitle}>Fire Alert</Text>
-      <Text style={styles.cardText}>Smoke spreads faster than flames!</Text>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>AVOID</Text>
+      <Text style={{
+        textAlign: "center",
+        color: "#FFF",
+        marginTop: 8,
+        fontWeight: "600",
+        fontSize: 17,
+        lineHeight: 26,
+      }}>
+        {"• Panic running\n• Smoke inhalation\n• Closed hot doors\n• Elevators\n• Re-entry into buildings"}
+      </Text>
     </View>
   );
 }
@@ -55,10 +68,38 @@ function FireCard1() {
 function FireCard2() {
   return (
     <View style={styles.checklistcard}>
-      <Text style={styles.cardTitle}>AVOID</Text>
-      <Text style={styles.cardText}>• Panic running</Text>
-      <Text style={styles.cardText}>• Smoke inhalation</Text>
-      <Text style={styles.cardText}>• Elevators</Text>
+      <Text style={{ fontSize: 14, color: "#FFF", fontWeight: "600" }}>OUTSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 40 }}>
+        <View style={{ alignItems: "center" }}>
+          <Image source={require('@/assets/images/fire1.png')} style={{ width: 80, height: 80 }} />
+          <Text style={{ width: 100, fontSize: 14, color: "#FFF", fontWeight: "600", textAlign: "center", bottom: 8 }}>
+            Move away from buildings
+          </Text>
+        </View>
+        <View style={{ alignItems: "center" }}>
+          <Image source={require('@/assets/images/fire2.png')} style={{ width: 80, height: 80 }} />
+          <Text style={{ width: 100, fontSize: 14, color: "#FFF", fontWeight: "600", textAlign: "center", bottom: 8 }}>
+            Call emergency responders
+          </Text>
+        </View>
+      </View>
+      <Text style={{
+        borderColor: "#93D047",
+        borderRadius: 8,
+        borderWidth: 1,
+        color: "white",
+        fontWeight: "600",
+        fontSize: 12,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        textAlign: "center",
+        lineHeight: 12,
+        paddingLeft: 20,
+        paddingRight: 20,
+      }}>
+        <Text style={{ color: "red" }}>DO NOT</Text>
+        {" stay near: \n\n • Burning buildings \n • Smoke paths \n • Gas tanks \n • Electrical posts"}
+      </Text>
     </View>
   );
 }
@@ -66,13 +107,78 @@ function FireCard2() {
 function FireCard3() {
   return (
     <View style={styles.checklistcard}>
-      <Text style={styles.cardTitle}>Escape Plan</Text>
+      <Text style={{ fontSize: 14, color: "#FFF", fontWeight: "600" }}>INSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 40 }}>
+        <View style={{ alignItems: "center" }}>
+          <Image source={require('@/assets/images/fire3.png')} style={{ width: 80, height: 80 }} />
+          <Text style={{ width: 100, fontSize: 14, color: "#FFF", fontWeight: "600", textAlign: "center", bottom: 8 }}>
+            Stay low (avoid smoke)
+          </Text>
+        </View>
+        <View style={{ alignItems: "center" }}>
+          <Image source={require('@/assets/images/fire4.png')} style={{ width: 80, height: 80 }} />
+          <Text style={{ width: 100, fontSize: 14, color: "#FFF", fontWeight: "600", textAlign: "center", bottom: 8 }}>
+            Use nearest exit
+          </Text>
+        </View>
+      </View>
+      <Text style={{
+        borderColor: "#93D047",
+        borderRadius: 8,
+        borderWidth: 1,
+        color: "white",
+        fontWeight: "600",
+        fontSize: 12,
+        paddingHorizontal: 20,
+        paddingVertical: 4,
+        textAlign: "center",
+        lineHeight: 12,
+      }}>
+        <Text style={{ color: "red" }}>DO NOT</Text>
+        {" stay near: \n\n • Use elevators \n • Open hot doors \n • Go back for belongings"}
+      </Text>
+    </View>
+  );
+}
+
+function FireCard4() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>IN VEHICLE</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 16, paddingHorizontal: 16 }}>
+        <Text style={{ fontSize: 15, color: "#FFF", fontWeight: "600", flex: 1, lineHeight: 24 }}>
+          {"• Stop immediately\n• Move away from other vehicles\n• Call emergency responders"}
+        </Text>
+        <Image source={require('@/assets/images/fire5.png')} style={{ width: 100, height: 100 }} />
+      </View>
+    </View>
+  );
+}
+
+function FireCard5() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>IN VEHICLE</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 16, paddingHorizontal: 16 }}>
+        <Text style={{ fontSize: 15, color: "#FFF", fontWeight: "600", flex: 1, lineHeight: 24 }}>
+          {"• Stop immediately\n• Move away from other vehicles\n• Call emergency responders"}
+        </Text>
+        <Image source={require('@/assets/images/fire6.png')} style={{ width: 100, height: 100 }} />
+      </View>
     </View>
   );
 }
 
 const disasterCards: Record<number, (() => JSX.Element)[]> = {
-  4: [FireCard1, FireCard2, FireCard3],
+  4: [FireCard1, FireCard2, FireCard3, FireCard4, FireCard5],
 };
 
 export default function ReportSent({
@@ -266,7 +372,7 @@ const styles = StyleSheet.create({
   },
   checklist: {
     width: CHECKLIST_WIDTH,
-    height: 440,
+    height: 480,
     backgroundColor: "#1F2937",
     marginTop: 32,
     borderRadius: 12,
@@ -291,7 +397,7 @@ const styles = StyleSheet.create({
   },
   checklistcard: {
     width: ITEM_WIDTH,
-    height: 180,
+    height: 250,
     borderRadius: 20,
     backgroundColor: "#374151",
     justifyContent: "center",
