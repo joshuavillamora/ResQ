@@ -740,7 +740,7 @@ function LandslideCard4() {
   );
 }
 
-const disasterCards: Record<number, (() => JSX.Element)[]> = {
+const disasterCards: Record<number, (() => React.ReactElement)[]> = {
   1: [FloodCard1, FloodCard2, FloodCard3, FloodCard4],
   2: [EarthquakeCard1, EarthquakeCard2, EarthquakeCard3, EarthquakeCard4, EarthquakeCard5],
   3: [TyphoonCard1, TyphoonCard2, TyphoonCard3, TyphoonCard4],
