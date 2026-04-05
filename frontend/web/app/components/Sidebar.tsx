@@ -40,7 +40,11 @@ export default function Sidebar() {
       >
         {/* Brand */}
         <div className="app-sidebar-brand">
-          <h1 className="app-sidebar-title">ResQ</h1>
+          <img
+            src="/resq-header.png"
+            alt="ResQ"
+            className="app-sidebar-logo"
+          />
           <p className="app-sidebar-subtitle">Admin Portal</p>
         </div>
 
@@ -50,7 +54,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`app-sidebar-link ${pathname === item.href ? "bg-[#2f4766] text-white" : ""}`}
+              className={`app-sidebar-link ${pathname === item.href ? "app-sidebar-link-active" : ""}`}
               onClick={() => setIsOpen(false)}
             >
               <span className="app-sidebar-link-label">{item.label}</span>

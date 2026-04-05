@@ -4,6 +4,8 @@
 :root {
   --background: #0f1f34;
   --foreground: #f2f7ff;
+  --app-chart-axis: rgba(255, 255, 255, 0.45);
+  --app-chart-grid: rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {
@@ -76,8 +78,176 @@
     @apply rounded-lg bg-[#2f4766] px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-[#3d5a8a];
   }
 
+  .app-directory-header {
+    @apply flex flex-col gap-4 rounded-2xl border border-white/8 bg-[#1a2433] px-5 py-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] lg:flex-row lg:items-end lg:justify-between;
+  }
+
+  .app-directory-kicker {
+    @apply text-[10px] font-bold uppercase tracking-[0.28em] text-sky-300/75;
+  }
+
+  .app-directory-title {
+    @apply mt-1 text-3xl font-semibold tracking-tight text-white;
+  }
+
+  .app-directory-text {
+    @apply mt-2 max-w-2xl text-sm leading-6 text-slate-300;
+  }
+
+  .app-directory-stats {
+    @apply grid grid-cols-3 gap-3;
+  }
+
+  .app-directory-stat {
+    @apply min-w-[88px] rounded-xl border border-white/8 bg-white/5 px-3 py-3 text-left;
+  }
+
+  .app-directory-stat-label {
+    @apply block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .app-directory-stat-value {
+    @apply mt-2 block text-2xl font-bold text-white;
+  }
+
+  .app-directory-toolbar {
+    @apply flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .app-directory-search {
+    @apply w-full max-w-xl rounded-xl border border-white/10 bg-[#1a2433] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-400 focus:border-sky-400;
+  }
+
+  .app-directory-grid {
+    @apply grid gap-4 md:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .app-directory-card {
+    @apply rounded-2xl border border-white/8 bg-[#1a2433] p-5 shadow-[0_20px_40px_rgba(0,0,0,0.2)];
+  }
+
+  .app-directory-card-header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .app-directory-card-title {
+    @apply text-lg font-semibold text-white;
+  }
+
+  .app-directory-card-subtitle {
+    @apply mt-1 text-sm text-slate-300;
+  }
+
+  .app-directory-card-body {
+    @apply mt-5 grid grid-cols-2 gap-4 text-sm;
+  }
+
+  .app-directory-field {
+    @apply rounded-xl border border-white/8 bg-white/5 px-3 py-3;
+  }
+
+  .app-directory-field-label {
+    @apply block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .app-directory-field-value {
+    @apply mt-1 block text-sm text-slate-100;
+  }
+
+  .app-settings-header {
+    @apply flex flex-col gap-4 rounded-2xl border border-white/8 bg-[#1a2433] px-5 py-5 shadow-[0_20px_40px_rgba(0,0,0,0.22)] lg:flex-row lg:items-end lg:justify-between;
+  }
+
+  .app-settings-kicker {
+    @apply text-[10px] font-bold uppercase tracking-[0.28em] text-sky-300/75;
+  }
+
+  .app-settings-title {
+    @apply mt-1 text-3xl font-semibold tracking-tight text-white;
+  }
+
+  .app-settings-text {
+    @apply mt-2 max-w-2xl text-sm leading-6 text-slate-300;
+  }
+
+  .app-settings-badge-wrap {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .app-settings-grid {
+    @apply grid gap-4 lg:grid-cols-2;
+  }
+
+  .app-settings-card {
+    @apply rounded-2xl border border-white/8 bg-[#1a2433] p-5 shadow-[0_20px_40px_rgba(0,0,0,0.2)];
+  }
+
+  .app-settings-card-header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .app-settings-card-title {
+    @apply text-lg font-semibold text-white;
+  }
+
+  .app-settings-card-subtitle {
+    @apply mt-1 text-sm text-slate-300;
+  }
+
+  .app-settings-fields {
+    @apply mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2;
+  }
+
+  .app-settings-field {
+    @apply rounded-xl border border-white/8 bg-white/5 px-3 py-3;
+  }
+
+  .app-settings-field--wide {
+    @apply sm:col-span-2;
+  }
+
+  .app-settings-field-label {
+    @apply block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .app-settings-field-value {
+    @apply mt-1 block break-all text-sm text-slate-100;
+  }
+
+  .app-settings-select {
+    @apply mt-2 w-full rounded-lg border border-white/10 bg-[#24374f] px-3 py-2 text-sm text-white outline-none transition-colors focus:border-sky-400;
+  }
+
+  .app-auth-page {
+    @apply flex min-h-[calc(100vh-4rem)] items-center justify-center;
+  }
+
+  .app-auth-card {
+    @apply mx-auto flex w-full max-w-md flex-col items-center rounded-2xl border border-white/10 bg-[#24374f] px-6 py-8 text-center shadow-[0_20px_50px_rgba(0,0,0,0.24)];
+  }
+
+  .app-auth-logo {
+    @apply block h-auto w-[180px];
+  }
+
+  .app-auth-title {
+    @apply mt-4 text-2xl font-bold text-white;
+  }
+
+  .app-auth-text {
+    @apply mt-2 text-sm leading-6 text-slate-300;
+  }
+
+  .app-auth-status {
+    @apply mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-200;
+  }
+
+  .app-auth-form {
+    @apply mt-6 w-full space-y-4 text-left;
+  }
+
   .app-sidebar {
-    @apply fixed left-0 top-0 z-40 h-screen w-64 border-r border-[rgba(190,215,255,0.12)] bg-gradient-to-b from-[#24374f] to-[#1a2637] p-6 transition-transform duration-300 md:relative md:w-56 md:translate-x-0;
+    @apply fixed left-0 top-0 z-40 h-screen w-64 border-r border-[rgba(190,215,255,0.12)] bg-gradient-to-b from-[#24374f] to-[#1a2637] px-2 pb-6 pt-2 transition-transform duration-300 md:relative md:w-56 md:translate-x-0;
   }
 
   .app-sidebar-open {
@@ -89,7 +259,11 @@
   }
 
   .app-sidebar-brand {
-    @apply mb-8;
+    @apply mb-7 flex flex-col items-start pl-1;
+  }
+
+  .app-sidebar-logo {
+    @apply block h-auto w-[88px];
   }
 
   .app-sidebar-title {
@@ -97,7 +271,7 @@
   }
 
   .app-sidebar-subtitle {
-    @apply mt-1 text-xs text-[#a8bce8];
+    @apply mt-1 text-xs text-[#a8bce8] pl-1;
   }
 
   .app-sidebar-nav {
@@ -106,6 +280,10 @@
 
   .app-sidebar-link {
     @apply flex items-center gap-3 rounded-lg px-4 py-3 text-[#d6e6ff] transition-all duration-200 hover:bg-[#2f4766] hover:text-white;
+  }
+
+  .app-sidebar-link-active {
+    @apply bg-[#2f4766] text-white;
   }
 
   .app-sidebar-link-icon {
@@ -144,8 +322,16 @@
     @apply mx-auto max-w-5xl rounded-xl border border-[rgba(168,198,238,0.1)] bg-[#24374f] p-8;
   }
 
+  .app-hero-brand {
+    @apply mb-2 flex flex-col gap-3;
+  }
+
+  .app-hero-logo {
+    @apply block h-auto w-[220px] sm:w-[280px] md:w-[320px];
+  }
+
   .app-hero-title {
-    @apply mb-2 text-4xl font-bold text-white;
+    @apply text-3xl font-bold text-white md:text-4xl;
   }
 
   .app-hero-text {
@@ -432,6 +618,12 @@
     @apply rounded-lg border border-white/10 bg-[#1a2433] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-200 outline-none transition-colors focus:border-sky-400;
   }
 
+  .app-reports-filter-select option,
+  .app-settings-select option {
+    background: #1a2433;
+    color: #e8f2ff;
+  }
+
   .app-reports-filter-select-compact {
     @apply min-w-[140px] bg-white/15 text-slate-100;
   }
@@ -671,6 +863,288 @@
   .app-map-chip--green {
     @apply border-emerald-500/50 text-emerald-300;
   }
+}
+
+html.theme-light body {
+  background: #dde6f2;
+  color: #10213a;
+  --app-chart-axis: #2f557e;
+  --app-chart-grid: rgba(47, 85, 126, 0.22);
+  --app-light-text-strong: #0f2340;
+  --app-light-text: #102945;
+  --app-light-text-soft: #27496f;
+  --app-light-text-muted: #355b83;
+  --app-light-accent: #31557d;
+  --app-light-border: rgba(35, 64, 106, 0.16);
+  --app-light-border-strong: rgba(35, 64, 106, 0.18);
+  --app-light-border-ui: rgba(35, 64, 106, 0.2);
+  --app-light-surface: #d0dbea;
+  --app-light-surface-alt: #c4d2e4;
+  --app-light-glass: rgba(208, 219, 234, 0.94);
+  --app-sidebar-link: #1f436a;
+  --app-sidebar-hover-bg: rgba(95, 127, 166, 0.22);
+  --app-sidebar-active-bg: rgba(95, 127, 166, 0.42);
+  --app-sidebar-active-text: #17385b;
+}
+
+html.theme-light .app-shell {
+  background: #dde6f2;
+  color: #10213a;
+}
+
+html.theme-light .app-sidebar {
+  border-right-color: var(--app-light-border-strong);
+  background: linear-gradient(to bottom, #d3e0f1, #c8d8ee);
+}
+
+html.theme-light .app-header {
+  border-bottom-color: var(--app-light-border-ui);
+  background: rgba(211, 223, 238, 0.95);
+}
+
+html.theme-light :is(
+  .app-header-title,
+  .app-sidebar-subtitle,
+  .app-settings-title,
+  .app-settings-card-title,
+  .app-settings-field-value,
+  .app-directory-title,
+  .app-directory-card-title,
+  .app-directory-field-value,
+  .app-auth-title,
+  .app-map-title
+) {
+  color: var(--app-light-text-strong);
+}
+
+html.theme-light :is(.app-sidebar-link, .app-sidebar-footer .app-sidebar-link) {
+  color: var(--app-sidebar-link);
+  font-weight: 600;
+}
+
+html.theme-light :is(.app-sidebar-link:hover, .app-sidebar-footer .app-sidebar-link:hover) {
+  background: var(--app-sidebar-hover-bg);
+  color: var(--app-light-text-strong);
+}
+
+html.theme-light .app-sidebar-link-active,
+html.theme-light .app-sidebar-toggle {
+  background: var(--app-sidebar-active-bg);
+  color: var(--app-sidebar-active-text);
+}
+
+html.theme-light :is(.app-sidebar-logo, .app-auth-logo) {
+  filter: brightness(0) saturate(100%) contrast(1.08);
+}
+
+html.theme-light .app-sidebar-subtitle {
+  color: #1f436b;
+}
+
+html.theme-light .app-sidebar-footer-inner {
+  border-top-color: rgba(35, 64, 106, 0.22);
+}
+
+html.theme-light :is(
+  .app-settings-text,
+  .app-settings-card-subtitle,
+  .app-directory-text,
+  .app-directory-card-subtitle,
+  .app-auth-text,
+  .app-card-body,
+  .app-map-description,
+  .app-map-panel-copy
+) {
+  color: var(--app-light-text-soft);
+}
+
+html.theme-light :is(
+  .app-auth-form label,
+  .app-auth-form .text-slate-200,
+  .app-auth-form .text-slate-300
+) {
+  color: #2a4f78 !important;
+}
+
+html.theme-light :is(
+  .app-card,
+  .app-settings-card,
+  .app-settings-header,
+  .app-directory-card,
+  .app-directory-header,
+  .app-auth-card,
+  .app-hero-card,
+  .app-map-meta-card,
+  .app-summary-card,
+  .app-chart-card,
+  .app-report-card,
+  .app-activity-panel,
+  .app-activity-card,
+  .app-actions-card,
+  .app-reports-toolbar,
+  .leaflet-control-zoom
+) {
+  border-color: var(--app-light-border);
+  background: var(--app-light-surface);
+}
+
+html.theme-light :is(
+  .app-settings-field,
+  .app-directory-field,
+  .app-map-legend-item,
+  .app-chart-tooltip,
+  .app-reports-filter-select,
+  .app-reports-filter-select-compact,
+  .app-settings-select
+) {
+  border-color: var(--app-light-border-ui);
+  background: var(--app-light-surface-alt);
+}
+
+html.theme-light :is(
+  .app-settings-field-label,
+  .app-directory-field-label,
+  .app-settings-kicker,
+  .app-directory-kicker,
+  .app-muted-text,
+  .app-map-meta-label,
+  .app-map-kicker,
+  .app-map-legend-label
+) {
+  color: #36597f;
+}
+
+html.theme-light .app-settings-select {
+  color: var(--app-light-text-strong);
+}
+
+html.theme-light :is(.app-map-meta-value, .app-map-panel-value) {
+  color: var(--app-light-text);
+}
+
+html.theme-light .app-map-meta-note,
+html.theme-light :is(.app-report-card h2, .app-activity-panel h2) {
+  color: var(--app-light-accent);
+}
+
+html.theme-light .app-map-card {
+  border-color: var(--app-light-border-strong);
+  background: #dbe7f5;
+  box-shadow: 0 20px 50px rgba(42, 72, 110, 0.18);
+}
+
+html.theme-light :is(.app-map-overlay, .leaflet-control-attribution) {
+  border-color: var(--app-light-border-strong);
+  background: var(--app-light-glass);
+}
+
+html.theme-light .app-map-overlay {
+  box-shadow: 0 18px 40px rgba(42, 72, 110, 0.2);
+}
+
+html.theme-light :is(.app-map-chip, .app-tone-pill) {
+  background: rgba(192, 207, 227, 0.9);
+}
+
+html.theme-light .app-map-chip {
+  border-color: var(--app-light-border-ui);
+  color: var(--app-sidebar-link);
+}
+
+html.theme-light .app-tone-pill {
+  background: rgba(255, 255, 255, 0.52);
+}
+
+html.theme-light .app-tone-pill--red {
+  border-color: rgba(190, 42, 58, 0.55);
+  color: #8f1f2d;
+}
+
+html.theme-light .app-tone-pill--orange {
+  border-color: rgba(198, 116, 24, 0.58);
+  color: #8d4e12;
+}
+
+html.theme-light .app-tone-pill--green {
+  border-color: rgba(16, 140, 92, 0.58);
+  color: #116849;
+}
+
+html.theme-light .app-tone-pill--blue {
+  border-color: rgba(34, 112, 194, 0.58);
+  color: #1c4f86;
+}
+
+html.theme-light :is(.leaflet-control-zoom a, .app-map-chip) {
+  color: var(--app-sidebar-link);
+}
+
+html.theme-light .leaflet-control-zoom a:hover {
+  background: rgba(35, 64, 106, 0.08);
+}
+
+html.theme-light .leaflet-control-attribution {
+  color: #2f547d;
+}
+
+html.theme-light :is(
+  .app-summary-title,
+  .app-summary-delta,
+  .app-chart-title,
+  .app-report-cell-text,
+  .app-reports-id,
+  .app-activity-time,
+  .app-map-panel-title,
+  .app-map-legend-count,
+  .app-chart-tooltip-label
+) {
+  color: var(--app-light-text-muted);
+}
+
+html.theme-light :is(
+  .app-summary-value,
+  .app-report-row,
+  .app-activity-text,
+  .app-activity-event,
+  .app-activity-location,
+  .app-report-head,
+  .app-report-cell-type,
+  .app-reports-cell,
+  .app-reports-action-button,
+  .app-donut-legend,
+  .app-donut-legend-value,
+  .app-chart-tooltip,
+  .app-reports-filter-select,
+  .app-reports-filter-select-compact
+) {
+  color: var(--app-light-text);
+}
+
+html.theme-light :is(.app-report-row, .app-activity-row) {
+  border-color: var(--app-light-border);
+}
+
+html.theme-light :is(.app-reports-filter-select option, .app-settings-select option) {
+  background: var(--app-light-surface);
+  color: var(--app-light-text);
+}
+
+html.theme-light .app-chart-card .recharts-cartesian-axis-tick-value {
+  fill: var(--app-chart-axis) !important;
+}
+
+html.theme-light .app-chart-card .recharts-cartesian-grid-horizontal line {
+  stroke: var(--app-chart-grid) !important;
+}
+
+html.theme-light :is(
+  .app-hero-text,
+  .app-stat-title,
+  .app-stat-detail,
+  .app-report-head-row,
+  .app-reports-empty
+) {
+  color: var(--app-light-accent);
 }
 
 /* Custom scrollbar styling */
