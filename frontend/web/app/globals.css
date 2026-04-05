@@ -228,6 +228,7 @@
 
   .app-auth-logo {
     @apply block h-auto w-[180px];
+    filter: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(337%) hue-rotate(183deg) brightness(103%) contrast(101%);
   }
 
   .app-auth-title {
@@ -264,6 +265,7 @@
 
   .app-sidebar-logo {
     @apply block h-auto w-[88px];
+    filter: brightness(0) saturate(100%) invert(96%) sepia(7%) saturate(337%) hue-rotate(183deg) brightness(103%) contrast(101%);
   }
 
   .app-sidebar-title {
@@ -934,7 +936,7 @@ html.theme-light .app-sidebar-toggle {
 }
 
 html.theme-light :is(.app-sidebar-logo, .app-auth-logo) {
-  filter: brightness(0) saturate(100%) contrast(1.08);
+  filter: brightness(0) saturate(100%) invert(17%) sepia(37%) saturate(994%) hue-rotate(174deg) brightness(95%) contrast(94%);
 }
 
 html.theme-light .app-sidebar-subtitle {
@@ -1127,10 +1129,39 @@ html.theme-light :is(
   .app-donut-legend,
   .app-donut-legend-value,
   .app-chart-tooltip,
+  .app-chart-tooltip-item,
   .app-reports-filter-select,
   .app-reports-filter-select-compact
 ) {
   color: var(--app-light-text);
+}
+
+html.theme-light .app-chart-tooltip-item span:last-child {
+  color: var(--app-light-text-strong);
+  font-weight: 600;
+}
+
+html.theme-light .app-chart-tooltip {
+  background: #1f3551;
+  border-color: #2f557e;
+  color: #e8f2ff;
+  box-shadow: 0 12px 28px rgba(20, 35, 56, 0.28);
+}
+
+html.theme-light .app-chart-tooltip-label {
+  color: #bcd8ff;
+  font-weight: 700;
+}
+
+html.theme-light .app-chart-tooltip-item {
+  color: #e8f2ff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+html.theme-light .app-chart-tooltip-item span:last-child {
+  color: #ffffff;
+  font-weight: 700;
 }
 
 html.theme-light :is(.app-report-row, .app-activity-row) {

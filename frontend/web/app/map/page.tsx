@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchReports, normalizeDisasterLabel, normalizeStatusLabel, type BackendReport } from "@/lib/api";
 
-type ZoneTone = "fire" | "flood" | "typhoon" | "landslide" | "volcano" | "earthquake" | "medical";
+type ZoneTone = "fire" | "flood" | "typhoon" | "landslide" | "volcano" | "earthquake";
 
 type Zone = {
   name: string;
@@ -24,25 +24,23 @@ type LegendItem = {
   subtitle: string;
 };
 
+const toneColorMap: Record<ZoneTone, { colorName: string; fillColor: string; borderColor: string }> = {
+  fire: { colorName: "Crimson", fillColor: "crimson", borderColor: "firebrick" },
+  flood: { colorName: "Royal Blue", fillColor: "royalblue", borderColor: "navy" },
+  typhoon: { colorName: "Goldenrod", fillColor: "goldenrod", borderColor: "darkgoldenrod" },
+  landslide: { colorName: "Saddle Brown", fillColor: "saddlebrown", borderColor: "sienna" },
+  volcano: { colorName: "Charcoal", fillColor: "dimgray", borderColor: "black" },
+  earthquake: { colorName: "Violet", fillColor: "mediumpurple", borderColor: "rebeccapurple" },
+};
+
 const legendConfig: Array<Omit<LegendItem, "count">> = [
   { label: "Fire", tone: "fire", subtitle: "Thermal hotspots" },
   { label: "Flood", tone: "flood", subtitle: "Water accumulation" },
   { label: "Typhoon", tone: "typhoon", subtitle: "Wind coverage" },
   { label: "Landslide", tone: "landslide", subtitle: "Slope movement" },
   { label: "Earthquake", tone: "earthquake", subtitle: "Ground movement" },
-  { label: "Medical Emergency", tone: "medical", subtitle: "Priority medical help" },
   { label: "Volcano", tone: "volcano", subtitle: "Heat anomaly" },
 ];
-
-const toneClassMap: Record<ZoneTone, string> = {
-  fire: "app-map-chip--red",
-  flood: "app-map-chip--blue",
-  typhoon: "app-map-chip--orange",
-  landslide: "app-map-chip--amber",
-  volcano: "app-map-chip--rose",
-  earthquake: "app-map-chip--violet",
-  medical: "app-map-chip--green",
-};
 
 function toneFromDisaster(disasterType: string): ZoneTone {
   if (disasterType === "fire") {
@@ -61,10 +59,6 @@ function toneFromDisaster(disasterType: string): ZoneTone {
     return "earthquake";
   }
 
-  if (disasterType === "medical emergency") {
-    return "medical";
-  }
-
   if (disasterType.includes("typhoon")) {
     return "typhoon";
   }
@@ -73,31 +67,10 @@ function toneFromDisaster(disasterType: string): ZoneTone {
 }
 
 function zonePalette(tone: ZoneTone): { fillColor: string; borderColor: string } {
-  if (tone === "fire") {
-    return { fillColor: "#ff5a52", borderColor: "#ff3b30" };
-  }
-
-  if (tone === "flood") {
-    return { fillColor: "#4f84ff", borderColor: "#3b82f6" };
-  }
-
-  if (tone === "landslide") {
-    return { fillColor: "#ff9e58", borderColor: "#f97316" };
-  }
-
-  if (tone === "typhoon") {
-    return { fillColor: "#f7a85a", borderColor: "#f59e0b" };
-  }
-
-  if (tone === "earthquake") {
-    return { fillColor: "#9b8cff", borderColor: "#8b5cf6" };
-  }
-
-  if (tone === "medical") {
-    return { fillColor: "#34d399", borderColor: "#10b981" };
-  }
-
-  return { fillColor: "#ff4b6e", borderColor: "#ef4444" };
+  return {
+    fillColor: toneColorMap[tone].fillColor,
+    borderColor: toneColorMap[tone].borderColor,
+  };
 }
 
 function reportToZone(report: BackendReport): Zone {
@@ -313,10 +286,17 @@ export default function MapPage() {
                 {legendItems.map((item) => (
                   <div key={item.label} className="app-map-legend-item">
                     <div className="app-map-legend-left">
-                      <span className={`app-map-legend-swatch ${toneClassMap[item.tone]}`} />
+                      <span
+                        className="app-map-legend-swatch"
+                        style={{
+                          backgroundColor: toneColorMap[item.tone].fillColor,
+                          borderColor: toneColorMap[item.tone].borderColor,
+                        }}
+                      />
                       <div>
                         <p className="app-map-legend-label">{item.label}</p>
                         <p className="app-map-legend-count">{item.subtitle}</p>
+                        <p className="app-map-legend-count">Color: {toneColorMap[item.tone].colorName}</p>
                       </div>
                     </div>
                     <span className="app-map-legend-count">{item.count}</span>

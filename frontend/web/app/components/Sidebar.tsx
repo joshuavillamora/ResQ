@@ -9,7 +9,6 @@ const navigationItems = [
   { label: "Dashboard", href: "/dashboard"},
   { label: "Reports", href: "/reports"},
   { label: "Map", href: "/map"},
-  { label: "Responders", href: "/responders"},
   { label: "Settings", href: "/settings"},
 ];
 

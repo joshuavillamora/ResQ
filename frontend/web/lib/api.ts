@@ -74,7 +74,7 @@ const MOCK_REPORTS: BackendReport[] = [
   {
     id: 3,
     user_id: null,
-    disaster_type: "medical emergency",
+    disaster_type: "landslide",
     latitude: 10.7008,
     longitude: 122.5456,
     barangay: "Molo",
@@ -159,7 +159,7 @@ const MOCK_REPORTS: BackendReport[] = [
   {
     id: 8,
     user_id: 2,
-    disaster_type: "medical emergency",
+    disaster_type: "landslide",
     latitude: 10.7072,
     longitude: 122.5728,
     barangay: "Flores",
@@ -206,6 +206,23 @@ const MOCK_REPORTS: BackendReport[] = [
     images: [],
     created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 11,
+    user_id: null,
+    disaster_type: "volcano",
+    latitude: 10.7241,
+    longitude: 122.5408,
+    barangay: "Buhang",
+    status: "unverified",
+    source: "sms",
+    confidence: 74,
+    description: "Ash plume and elevated heat reported near the volcano monitoring zone",
+    severity: "high",
+    image_url: null,
+    images: [],
+    created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+    updated_at: null,
   },
 ];
 
