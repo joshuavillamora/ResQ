@@ -561,11 +561,103 @@ function FireCard5() {
   );
 }
 
+function VolcanoCard1() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>AVOID<Text style={{ color: "white" }}>:</Text></Text>
+      <Text style={{
+        textAlign: "center",
+        color: "#FFF",
+        fontWeight: "600",
+        fontSize: 17,
+        lineHeight: 26,
+      }}>
+        {"• Breathing ash\n• River valleys\n• Contaminated water sources\n• Open manholes\n• Unknown water depth"}
+      </Text>
+    </View>
+  );
+}
+
+function VolcanoCard2() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>OUTDOORS</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/typhoon1.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: ITEM_WIDTH - 40, fontSize: 14, color: "#FFF", fontWeight: "600", bottom: 4 }}>
+              • Find shelter, Cover nose and mouth, and protect your eyes from ash
+            </Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/volcano1.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: ITEM_WIDTH - 40, fontSize: 14, color: "#FFF", fontWeight: "600", bottom: 4 }}>
+              • Move away from bodies of water immediately to avoid the <text style={{ color: "#9DFF00" }}>RISK OF LAHAR</text>
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function VolcanoCard3() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>INSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/volcano2.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: ITEM_WIDTH, fontSize: 16, color: "#FFF", fontWeight: "600", bottom: 4, textAlign: "center" }}>
+              • Wear mask if ash enters
+            </Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/volcano3.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: ITEM_WIDTH, fontSize: 16, color: "#FFF", fontWeight: "600", bottom: 4, textAlign: "center" }}>
+              • Close windows and doors
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function VolcanoCard4() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ color: "#EEFF00", fontSize: 24, fontWeight: "700" }}>WHILE DRIVING</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600", lineHeight: 21 }}>
+            {"• Drive slowly if necessary\n"}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#EEFF00", fontWeight: "700", lineHeight: 21 }}>
+            {"DO NOT drive through:\n"}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600", lineHeight: 21 }}>
+            {"• Thick Ashfall\n• Lahar channels\n• Blocked routes"}
+          </Text>
+        </View>
+        <Image source={require('@/assets/images/volcano4.png')} style={{ width: 90, height: 90 }} />
+      </View>
+    </View>
+  );
+}
+
 const disasterCards: Record<number, (() => JSX.Element)[]> = {
   1: [FloodCard1, FloodCard2, FloodCard3, FloodCard4],
   2: [EarthquakeCard1, EarthquakeCard2, EarthquakeCard3, EarthquakeCard4, EarthquakeCard5],
   3: [TyphoonCard1, TyphoonCard2, TyphoonCard3, TyphoonCard4],
   4: [FireCard1, FireCard2, FireCard3, FireCard4, FireCard5],
+  5: [VolcanoCard1, VolcanoCard2, VolcanoCard3, VolcanoCard4],
 };
 
 export default function ReportSent({
