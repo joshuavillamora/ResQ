@@ -15,6 +15,23 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                try {
+                  var stored = localStorage.getItem("resq_theme_preference") || "system";
+                  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                  var resolved = stored === "system" ? (prefersDark ? "dark" : "light") : stored;
+                  document.documentElement.classList.remove("theme-dark", "theme-light");
+                  document.documentElement.classList.add("theme-" + resolved);
+                } catch (_error) {
+                  document.documentElement.classList.add("theme-dark");
+                }
+              })();
+            `,
+          }}
+        />
         <div className="app-shell">
           <Sidebar />
           <main className="app-main">

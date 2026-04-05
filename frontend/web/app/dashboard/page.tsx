@@ -87,8 +87,8 @@ function formatRelative(isoDate: string | null): string {
 }
 
 const chartTheme = {
-  axisStroke: "rgba(255,255,255,0.35)",
-  gridStroke: "rgba(255,255,255,0.08)",
+  axisStroke: "var(--app-chart-axis)",
+  gridStroke: "var(--app-chart-grid)",
   lineMargin: { top: 10, right: 16, left: 0, bottom: 0 },
 } as const;
 
