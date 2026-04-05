@@ -173,6 +173,131 @@ function FloodCard4() {
   );
 }
 
+function EarthquakeCard1() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>AVOID<Text style={{ color: "white" }}>:</Text></Text>
+      <Text style={{
+        textAlign: "center",
+        color: "#FFF",
+        fontWeight: "600",
+        fontSize: 17,
+        lineHeight: 26,
+      }}>
+        {"• Windows\n• Mirrors\n• Glass\n• Shelves\n• Hanging object"}
+      </Text>
+    </View>
+  );
+}
+
+function EarthquakeCard2() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>OUTSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/earthquake1.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: 120, fontSize: 14, color: "#FFF", fontWeight: "600", marginLeft: 20, bottom: 4 }}>
+              • Move away from buildings
+            </Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/earthquake2.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: 120, fontSize: 14, color: "#FFF", fontWeight: "600", marginLeft: 20, bottom: 4 }}>
+              • Call emergency responders
+            </Text>
+          </View>
+        </View>
+
+        <View style={{
+          flex: 1,
+          borderColor: "#93D047",
+          borderRadius: 8,
+          borderWidth: 1,
+          paddingHorizontal: 10,
+          paddingVertical: 8,
+          marginLeft: 8,
+          height: 175,
+        }}>
+          <Text style={{ color: "white", fontWeight: "600", fontSize: 14, lineHeight: 15, textAlign: "center", justifyContent: "center" }}>
+            <Text style={{ color: "red", fontWeight: "700" }}>DO NOT </Text>
+            {"stay near:\n\n• Buildings\n• Streetlights\n• Power Lines \n• Bridges\n• Trees\n• Walls"}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function EarthquakeCard3() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>INSIDE</Text>
+      <View style={{ alignItems: "center", marginTop: 20 }}>
+        <Image source={require('@/assets/images/earthquake3.png')} style={{ width: 250, height: 60 }} />
+      </View>
+      <View style={{
+        borderColor: "#93D047",
+        borderRadius: 8,
+        borderWidth: 1,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        width: 200,
+        marginTop: 12,
+      }}>
+        <Text style={{ color: "white", fontWeight: "600", fontSize: 12, lineHeight: 12, textAlign: "center" }}>
+          <Text style={{ color: "red" }}>DO NOT</Text>
+          {": \n• Panic\n• Run away\n• Use elevators"}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+function EarthquakeCard4() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ color: "#EEFF00", fontSize: 24, fontWeight: "700" }}>NEAR COASTLINE</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 12, marginTop: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600", lineHeight: 21 }}>
+            Move to high ground immediately if shaking lasts longer than 20 seconds.
+          </Text>
+        </View>
+        <Image source={require('@/assets/images/earthquake4.png')} style={{ width: 90, height: 90 }} />
+      </View>
+    </View>
+  );
+}
+
+function EarthquakeCard5() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ color: "#EEFF00", fontSize: 24, fontWeight: "700" }}>WHILE DRIVING</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "500", lineHeight: 21 }}>
+            {"• Pull over safely\n"}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#EEFF00", fontWeight: "600", lineHeight: 21 }}>
+            {"DO NOT stop near:\n"}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "500", lineHeight: 21 }}>
+            {"• Fast-moving water\n• Submerged roads\n• Overflowed bridges"}
+          </Text>
+        </View>
+        <Image source={require('@/assets/images/earthquake5.png')} style={{ width: 90, height: 90 }} />
+      </View>
+    </View>
+  );
+}
+
 function FireCard1() {
   return (
     <View style={styles.checklistcard}>
@@ -309,7 +434,7 @@ function FireCard5() {
 
 const disasterCards: Record<number, (() => JSX.Element)[]> = {
   1: [FloodCard1, FloodCard2, FloodCard3, FloodCard4],
-  2: [EarthquakeCard1, EarthquakeCard2, EarthquakeCard3, EarthquakeCard4],
+  2: [EarthquakeCard1, EarthquakeCard2, EarthquakeCard3, EarthquakeCard4, EarthquakeCard5],
   4: [FireCard1, FireCard2, FireCard3, FireCard4, FireCard5],
 };
 
