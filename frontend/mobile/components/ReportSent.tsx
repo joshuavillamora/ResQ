@@ -31,11 +31,11 @@ const disasterMap: Record<number, string> = {
 };
 
 const disasterTaglines: Record<number, string> = {
-  1: "Move to higher ground immediately!",
-  2: "Expect aftershocks and stay alert!",
-  3: "Stay indoors and away from windows!",
+  1: "Expect rising water levels and limited mobility!",
+  2: "Expect aftershocks and stay updated!",
+  3: "Expect strong wings and flying debris!",
   4: "Smoke spreads faster than flames!",
-  5: "Evacuate immediately when advised!",
+  5: "Expect ashfall and breathing hazards!",
   6: "Watch for shifting ground and debris!",
 };
 
