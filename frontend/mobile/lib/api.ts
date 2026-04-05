@@ -47,6 +47,10 @@ export type HotlineRecord = {
   created_at: string | null;
 };
 
+type ApiError = Error & {
+  status?: number;
+};
+
 function getBaseUrl() {
   const extra = Constants.expoConfig?.extra as { apiBaseUrl?: string; resqApiBaseUrl?: string } | undefined;
   if (extra?.resqApiBaseUrl) {
@@ -142,7 +146,9 @@ async function request<T>(path: string, init?: RequestInit, auth?: boolean): Pro
       // Keep default detail if response is not JSON.
     }
 
-    throw new Error(detail);
+    const error = new Error(detail) as ApiError;
+    error.status = response.status;
+    throw error;
   }
 
   return (await response.json()) as T;
@@ -173,14 +179,29 @@ export async function createReport(payload: {
   barangay: string;
 }) {
   const token = await getStoredToken();
-  return request<BackendReport>(
-    "/report",
-    {
-      method: "POST",
-      body: JSON.stringify(payload),
-    },
-    Boolean(token),
-  );
+
+  try {
+    return await request<BackendReport>(
+      "/report",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+      Boolean(token),
+    );
+  } catch (error) {
+    const apiError = error as ApiError;
+
+    if (token && apiError.status === 401) {
+      await clearSession();
+      return request<BackendReport>("/report", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    }
+
+    throw error;
+  }
 }
 
 export async function updateReport(
@@ -193,14 +214,29 @@ export async function updateReport(
   },
 ) {
   const token = await getStoredToken();
-  return request<BackendReport>(
-    `/report/${reportId}`,
-    {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    },
-    Boolean(token),
-  );
+
+  try {
+    return await request<BackendReport>(
+      `/report/${reportId}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      },
+      Boolean(token),
+    );
+  } catch (error) {
+    const apiError = error as ApiError;
+
+    if (token && payload.edit_token && apiError.status === 401) {
+      await clearSession();
+      return request<BackendReport>(`/report/${reportId}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
+    }
+
+    throw error;
+  }
 }
 
 export async function fetchMyReports() {
