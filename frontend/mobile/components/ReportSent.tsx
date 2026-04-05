@@ -43,6 +43,154 @@ const { width } = Dimensions.get("window");
 const CHECKLIST_WIDTH = width * 0.85;
 const ITEM_WIDTH = CHECKLIST_WIDTH - 40;
 
+function FloodCard1() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>AVOID<Text style={{ color: "white" }}>:</Text></Text>
+      <Text style={{
+        textAlign: "center",
+        color: "#FFF",
+        fontWeight: "600",
+        fontSize: 17,
+        lineHeight: 26,
+      }}>
+        {"• Drainage canals\n• Rivers\n• Bridges\n• Flooded streets\n• Low-lying roads\n• Underpasses"}
+      </Text>
+    </View>
+  );
+}
+
+function FloodCard2() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>OUTDOORS</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+        
+        {/* Left column: images + labels */}
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/flood1.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: 120, fontSize: 14, color: "#FFF", fontWeight: "600", marginLeft: 20, bottom: 4 }}>
+              • Move to a higher area immediately
+            </Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/flood2.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: 120, fontSize: 14, color: "#FFF", fontWeight: "600", marginLeft: 20, bottom: 4 }}>
+              • Avoid flowing water
+            </Text>
+          </View>
+        </View>
+
+        {/* Right: warning box */}
+        <View style={{
+          flex: 1,
+          borderColor: "#93D047",
+          borderRadius: 8,
+          borderWidth: 1,
+          paddingHorizontal: 10,
+          paddingVertical: 8,
+          marginLeft: 8,
+          height: 175,
+        }}>
+          <Text style={{ color: "white", fontWeight: "600", fontSize: 12, lineHeight: 15, textAlign: "center" }}>
+            <Text style={{ color: "red" }}>DO NOT</Text>
+            {"\n\n• Floodwater on foot\n• Submerged roads\n• Near riverbanks\n• Low-lying areas"}
+          </Text>
+        </View>
+
+      </View>
+    </View>
+  );
+}
+
+function FloodCard3() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>INSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+        
+        {/* Left column: images + labels */}
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/flood3.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: 120, fontSize: 14, color: "#FFF", fontWeight: "600", marginLeft: 20, bottom: 4 }}>
+              • Switch off electricity if safe
+            </Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/flood1.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: 120, fontSize: 14, color: "#FFF", fontWeight: "600", marginLeft: 20, bottom: 4 }}>
+              • Move to a higher area immediately
+            </Text>
+          </View>
+        </View>
+
+        {/* Right: warning box */}
+        <View style={{
+          flex: 1,
+          borderColor: "#93D047",
+          borderRadius: 8,
+          borderWidth: 1,
+          paddingHorizontal: 10,
+          paddingVertical: 8,
+          marginLeft: 8,
+          height: 175,
+        }}>
+          <Text style={{ color: "white", fontWeight: "600", fontSize: 12, lineHeight: 15, textAlign: "center" }}>
+            <Text style={{ color: "red" }}>DO NOT</Text>
+            {"\n\n• Walk in floodwater\n• Submerged roads\n• Near riverbanks\n• Low-lying areas"}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function FloodCard4() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ color: "#EEFF00", fontSize: 24, fontWeight: "700" }}>IN VEHICLE</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600", lineHeight: 21 }}>
+            {"• Turn around if road is flooded\n"}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#EEFF00", fontWeight: "700", lineHeight: 21 }}>
+            {"DO NOT drive through:\n"}
+          </Text>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600", lineHeight: 21 }}>
+            {"• Fast-moving water\n• Submerged roads\n• Overflowed bridges"}
+          </Text>
+        </View>
+        <Image source={require('@/assets/images/flood4.png')} style={{ width: 90, height: 90 }} />
+      </View>
+    </View>
+  );
+}
+
+function FloodCard5() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>AFTER FLOOD</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 16, paddingHorizontal: 16 }}>
+        <Text style={{ fontSize: 15, color: "#FFF", fontWeight: "600", flex: 1, lineHeight: 24 }}>
+          {"• Avoid floodwater contact\n• Boil water before drinking\n• Document property damage\n• Report hazards"}
+        </Text>
+        <Image source={require('@/assets/images/flood4.png')} style={{ width: 100, height: 100 }} />
+      </View>
+    </View>
+  );
+}
+
 function FireCard1() {
   return (
     <View style={styles.checklistcard}>
@@ -178,6 +326,7 @@ function FireCard5() {
 }
 
 const disasterCards: Record<number, (() => JSX.Element)[]> = {
+  1: [FloodCard1, FloodCard2, FloodCard3, FloodCard4],
   4: [FireCard1, FireCard2, FireCard3, FireCard4, FireCard5],
 };
 
