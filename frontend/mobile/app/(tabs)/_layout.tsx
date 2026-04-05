@@ -239,6 +239,14 @@ const AnimatedTabs = () => {
                 headerShown: false,
               }}
             />
+            <Tabs.Screen
+              name="settings"
+              options={{
+                title: 'Settings',
+                href: null,
+                headerShown: false,
+              }}
+            />
           </Tabs>
 
           {menuOpen && (
