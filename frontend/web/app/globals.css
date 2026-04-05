@@ -1001,6 +1001,19 @@ html.theme-light :is(
   background: var(--app-light-surface-alt);
 }
 
+html.theme-light .app-directory-stat {
+  border-color: var(--app-light-border-ui);
+  background: rgba(191, 206, 226, 0.82);
+}
+
+html.theme-light .app-directory-stat-label {
+  color: #46688d;
+}
+
+html.theme-light .app-directory-stat-value {
+  color: var(--app-light-text-strong);
+}
+
 html.theme-light :is(
   .app-settings-field-label,
   .app-directory-field-label,

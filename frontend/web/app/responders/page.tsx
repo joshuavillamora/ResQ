@@ -74,7 +74,7 @@ export default function RespondersPage() {
           <div>
             <p className="app-directory-kicker">Directory</p>
             <h1 className="app-directory-title">Responders and Admins</h1>
-            <p className="app-directory-text">Track registered responder and station admin accounts connected to the backend.</p>
+            <p className="app-directory-text">Track registered responder and station admin accounts.</p>
           </div>
 
           <div className="app-directory-stats">
