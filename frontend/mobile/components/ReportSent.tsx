@@ -585,7 +585,7 @@ function VolcanoCard1() {
 function VolcanoCard2() {
   return (
     <View style={styles.checklistcard}>
-      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>OUTDOORS</Text>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>OUTSIDE</Text>
       <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
         <View style={{ flexDirection: "column", gap: 8 }}>
           <View style={{ alignItems: "center" }}>
@@ -652,12 +652,101 @@ function VolcanoCard4() {
   );
 }
 
+function LandslideCard1() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{
+        color: "#EEFF00",
+        fontSize: 24,
+        fontWeight: "700",
+      }}>AVOID<Text style={{ color: "white" }}>:</Text></Text>
+      <Text style={{
+        textAlign: "center",
+        color: "#FFF",
+        fontWeight: "600",
+        fontSize: 17,
+        lineHeight: 26,
+        width: ITEM_WIDTH - 60,
+      }}>
+        {"• Staying near steep slopes during heavy rain\n• Ignoring warning signs (cracks, tilting trees, unusual sounds)\n• Crossing landslide areas"}
+      </Text>
+    </View>
+  );
+}
+
+function LandslideCard2() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>OUTSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+        <View style={{ flexDirection: "column", gap: 8 }}>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/landslide1.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: ITEM_WIDTH - 40, fontSize: 14, color: "#FFF", fontWeight: "600", bottom: 4 }}>
+              • Run sideways away from the path of the landslide. Go to higher, stable ground.
+            </Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Image source={require('@/assets/images/landslide2.png')} style={{ width: 60, height: 60 }} />
+            <Text style={{ width: ITEM_WIDTH - 40, fontSize: 14, color: "#FFF", fontWeight: "600", bottom: 4 }}>
+              • Avoid riverbanks and steep slopes and watch for falling rocks or debris.
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function LandslideCard3() {
+  return (
+    <View style={styles.checklistcard}>
+      <Text style={{ fontSize: 20, color: "#FFF", fontWeight: "600" }}>INSIDE</Text>
+      <View style={{ flexDirection: "row", gap: 12, alignItems: "center", paddingHorizontal: 12 }}>
+        <View style={{ flexDirection: "column", gap: 8, alignItems: "center", justifyContent: "center" }}>
+          <View style={{ alignItems: "center", flexDirection: "row" }}>
+            <Image source={require('@/assets/images/flood1.png')} style={{ width: 60, height: 60 }} />
+            <Image source={require('@/assets/images/volcano3.png')} style={{ width: 60, height: 60 }} />
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ width: ITEM_WIDTH - 60, fontSize: 14, color: "#FFF", fontWeight: "600", bottom: 4, textAlign: "left" }}>
+              • Move to higher floors or stable areas and stay away from windows and walls facing slopes. <br/>
+              • Listen for rumbling/cracking sounds, Be ready to evacuate quickly.
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function LandslideCard4() {
+  return (
+    <View style={styles.checklistcard}>
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, width: "100%", marginTop: 16 }}>
+        <View>
+          <Text style={{ color: "#EEFF00", fontSize: 20, fontWeight: "700" }}>WHILE DRIVING</Text>
+          <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600" }}>• Drive slowly{"\n"}  if necessary</Text>
+        </View>
+        <Image source={require('@/assets/images/earthquake5.png')} style={{ width: 90, height: 90 }} />
+      </View>
+
+      <View style={{ paddingHorizontal: 16, paddingBottom: 16, width: "100%" }}>
+        <Text style={{ fontSize: 16, color: "#EEFF00", fontWeight: "600", lineHeight: 21 }}>
+          {"Don’t drive through debris or flowing mud\nIf trapped, leave the vehicle and move to higher ground"}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 const disasterCards: Record<number, (() => JSX.Element)[]> = {
   1: [FloodCard1, FloodCard2, FloodCard3, FloodCard4],
   2: [EarthquakeCard1, EarthquakeCard2, EarthquakeCard3, EarthquakeCard4, EarthquakeCard5],
   3: [TyphoonCard1, TyphoonCard2, TyphoonCard3, TyphoonCard4],
   4: [FireCard1, FireCard2, FireCard3, FireCard4, FireCard5],
   5: [VolcanoCard1, VolcanoCard2, VolcanoCard3, VolcanoCard4],
+  6: [LandslideCard1, LandslideCard2, LandslideCard3, LandslideCard4],
 };
 
 export default function ReportSent({
