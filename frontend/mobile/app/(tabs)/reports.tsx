@@ -6,11 +6,13 @@ import { fetchMyReports, getRememberedReports, normalizeDisasterLabel, normalize
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { ImageBackground, ScrollView, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Reports() {
   const { menuOpen, toggleMenu } = useDrawer();
   const { colors } = useTheme();
   const homeStyle = createHomeStyles(colors);
+
   const [reports, setReports] = useState<BackendReport[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -34,9 +36,14 @@ export default function Reports() {
 
   return (
     <ImageBackground source={require("@/assets/images/bg.png")} style={{ flex: 1 }} resizeMode="cover">
-      <View style={homeStyle.safeArea}>
+      <SafeAreaView style={homeStyle.safeArea}>
         <Header menuOpen={menuOpen} onMenuToggle={toggleMenu} />
-        <ScrollView contentContainerStyle={{ paddingTop: 110, paddingHorizontal: 20, paddingBottom: 140 }}>
+        <View style={{ height: 90 }} />
+
+        <ScrollView
+          style={{ flex: 1, marginBottom: 100 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}
+        >
           <Text style={{ color: "#ffffff", fontSize: 24, fontWeight: "700", marginBottom: 8 }}>Reports</Text>
           <Text style={{ color: "#f1dede", marginBottom: 20 }}>
             Review reports submitted from this device or from your logged-in account.
@@ -81,7 +88,7 @@ export default function Reports() {
             </View>
           ) : null}
         </ScrollView>
-      </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }
