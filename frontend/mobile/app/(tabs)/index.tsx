@@ -124,28 +124,6 @@ export default function Index() {
     }
   }
 
-  function confirmReport(button: DisasterButton) {
-    if (!location) {
-      Alert.alert("Location unavailable", "Please wait for the GPS capture to finish, then try again.");
-      return;
-    }
-
-    Alert.alert(
-      `Report ${button.label}?`,
-      "This will send your current location to ResQ. If the backend is unreachable, Android will switch to SMS fallback automatically.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Confirm report",
-          style: "default",
-          onPress: () => {
-            void submitReport(button);
-          },
-        },
-      ],
-    );
-  }
-
   return (
     <ImageBackground source={require("@/assets/images/bg.png")} style={{ flex: 1 }} resizeMode="cover">
       <SafeAreaView style={homeStyle.safeArea}>
@@ -168,7 +146,7 @@ export default function Index() {
               <TouchableOpacity
                 key={button.id}
                 style={homeStyle.disasterButton}
-                onPress={() => confirmReport(button)}
+                onPress={() => submitReport(button)}
                 activeOpacity={0.85}
                 disabled={submittingId !== null}
               >
