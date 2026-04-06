@@ -136,8 +136,8 @@ export default function Index() {
             onBarangayChange={setBarangay}
           />
           <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 16, marginTop: 4 }}>
-            <Text style={{ color: "#FFDBDB", fontSize: 16, fontWeight: "bold" }}>Report mode: </Text>
-            <Text style={{ color: "#FAFEC0", fontSize: 16, fontWeight: "bold" }}>API first, offline SMS fallback</Text>
+            <Text style={{ color: "#FFDBDB", fontSize: 16, fontWeight: "bold" }}>Network: Connected </Text>
+            <Text style={{ color: "#FAFEC0", fontSize: 16, fontWeight: "bold" }}>(API / SMS ready)</Text>
           </View>
         </View>
         <View style={homeStyle.disasterGridContainer}>
