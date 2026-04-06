@@ -15,6 +15,7 @@ import {
 type Props = {
   visible: boolean;
   disaster: number | null;
+  deliveryMethod?: "api" | "sms";
   onClose?: () => void;
   onMarkSafe?: () => void;
   onOpenRoute?: () => void;
@@ -752,6 +753,7 @@ const disasterCards: Record<number, (() => React.ReactElement)[]> = {
 export default function ReportSent({
   visible,
   disaster,
+  deliveryMethod = "api",
   onClose,
   onMarkSafe,
   onOpenRoute,
@@ -819,9 +821,17 @@ export default function ReportSent({
           {submitting
             ? "Sending your report..."
             : disaster
-              ? `${disasterMap[disaster]} report has been sent!`
+              ? deliveryMethod === "sms"
+                ? `${disasterMap[disaster]} report sent via SMS fallback!`
+                : `${disasterMap[disaster]} report has been sent!`
               : "Your report has been sent!"}
         </Text>
+
+        {deliveryMethod === "sms" && !submitting ? (
+          <Text style={styles.deliveryNote}>
+            The app could not reach the backend, so it switched to offline SMS fallback for this report.
+          </Text>
+        ) : null}
 
         <View style={styles.checklist}>
           <Text style={styles.procedureLabel}>
@@ -883,7 +893,7 @@ export default function ReportSent({
         >
           <View style={styles.buttonInner}>
             <Text style={styles.btnText}>
-              {submitting ? "Please wait" : "Mark as Safe"}
+              {submitting ? "Please wait" : deliveryMethod === "sms" ? "Close" : "Mark as Safe"}
             </Text>
             <Image
               source={require("@/assets/images/checkmark.png")}
@@ -937,6 +947,15 @@ const styles = StyleSheet.create({
     textShadowColor: "#000",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
+  },
+  deliveryNote: {
+    marginTop: 12,
+    color: "#FFF6C4",
+    fontSize: 14,
+    fontWeight: "600",
+    lineHeight: 20,
+    textAlign: "center",
+    paddingHorizontal: 24,
   },
   checklist: {
     width: CHECKLIST_WIDTH,

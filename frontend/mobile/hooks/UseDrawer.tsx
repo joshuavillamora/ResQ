@@ -12,21 +12,23 @@ type DrawerContextValue = {
   setSelectedDisaster: (value: number | null) => void;
 
   latestReport: {
-    id: number;
-    editToken: string;
+    id?: number;
+    editToken?: string;
     disasterLabel: string;
     barangay: string;
     latitude: number;
     longitude: number;
+    deliveryMethod: "api" | "sms";
   } | null;
   setLatestReport: (
     value: {
-      id: number;
-      editToken: string;
+      id?: number;
+      editToken?: string;
       disasterLabel: string;
       barangay: string;
       latitude: number;
       longitude: number;
+      deliveryMethod: "api" | "sms";
     } | null,
   ) => void;
 };

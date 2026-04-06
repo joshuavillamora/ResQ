@@ -17,6 +17,8 @@ export type BackendUser = {
 export type BackendReport = {
   id: number;
   user_id: number | null;
+  sms_sender_code: string | null;
+  client_report_id: string | null;
   disaster_type: string;
   latitude: number;
   longitude: number;
@@ -177,6 +179,8 @@ export async function createReport(payload: {
   latitude: number;
   longitude: number;
   barangay: string;
+  client_report_id?: string;
+  sms_sender_code?: string;
 }) {
   const token = await getStoredToken();
 

@@ -82,7 +82,7 @@ const AnimatedTabs = () => {
   });
 
   const handleMarkSafe = () => {
-    if (latestReport) {
+    if (latestReport?.id && latestReport.editToken) {
       setOverlayVisible(false);
       router.push({
         pathname: "/reportUpdate",
@@ -270,6 +270,7 @@ const AnimatedTabs = () => {
             <ReportSent
               visible={overlayVisible}
               disaster={selectedDisaster}
+              deliveryMethod={latestReport?.deliveryMethod ?? "api"}
               onClose={() => setOverlayVisible(false)}
               onMarkSafe={handleMarkSafe}
             />
@@ -286,12 +287,13 @@ const TabsLayout = () => {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [selectedDisaster, setSelectedDisaster] = useState<number | null>(null);
   const [latestReport, setLatestReport] = useState<{
-    id: number;
-    editToken: string;
+    id?: number;
+    editToken?: string;
     disasterLabel: string;
     barangay: string;
     latitude: number;
     longitude: number;
+    deliveryMethod: "api" | "sms";
   } | null>(null);
 
   const toggleMenu = () => {

@@ -4,9 +4,10 @@ import LocationLocator from "@/components/CurrentLocation";
 import useDrawer from "@/hooks/UseDrawer";
 import useTheme from "@/hooks/UseTheme";
 import { createReport, rememberReport } from "@/lib/api";
+import { buildLocalSmsReport, createClientReportId, getSmsSenderCode, sendFallbackSms } from "@/lib/smsFallback";
 import { BlurView } from "expo-blur";
 import { useState } from "react";
-import { Alert, Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ImageBackground, Platform, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type DisasterButton = {
@@ -16,15 +17,18 @@ type DisasterButton = {
   image: number;
 };
 
+type ApiLikeError = Error & {
+  status?: number;
+};
+
+function isNetworkFailure(error: unknown) {
+  const apiError = error as ApiLikeError;
+  return typeof apiError?.status !== "number";
+}
+
 export default function Index() {
   const { colors } = useTheme();
-  const {
-    menuOpen,
-    toggleMenu,
-    setOverlayVisible,
-    setSelectedDisaster,
-    setLatestReport,
-  } = useDrawer();
+  const { menuOpen, toggleMenu, setOverlayVisible, setSelectedDisaster, setLatestReport } = useDrawer();
   const homeStyle = createHomeStyles(colors);
 
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -46,6 +50,10 @@ export default function Index() {
       return;
     }
 
+    const safeBarangay = barangay || "Unknown area";
+    const clientReportId = createClientReportId();
+    const senderCode = await getSmsSenderCode();
+
     setSubmittingId(button.id);
 
     try {
@@ -53,25 +61,89 @@ export default function Index() {
         disaster_type: button.backendType,
         latitude: location.lat,
         longitude: location.lng,
-        barangay: barangay || "Unknown area",
+        barangay: safeBarangay,
+        client_report_id: clientReportId,
+        sms_sender_code: senderCode,
       });
 
       await rememberReport(report);
       setSelectedDisaster(button.id);
       setLatestReport({
         id: report.id,
-        editToken: report.edit_token ?? "",
+        editToken: report.edit_token,
         disasterLabel: button.label,
         barangay: report.barangay,
         latitude: report.latitude,
         longitude: report.longitude,
+        deliveryMethod: "api",
       });
       setOverlayVisible(true);
+      return;
     } catch (error) {
+      if (Platform.OS === "android" && isNetworkFailure(error)) {
+        try {
+          await sendFallbackSms({
+            disasterType: button.backendType,
+            latitude: location.lat,
+            longitude: location.lng,
+            barangay: safeBarangay,
+            senderCode,
+            clientReportId,
+          });
+
+          const localSmsReport = await buildLocalSmsReport({
+            disasterType: button.backendType,
+            disasterLabel: button.label,
+            latitude: location.lat,
+            longitude: location.lng,
+            barangay: safeBarangay,
+            senderCode,
+            clientReportId,
+          });
+
+          await rememberReport(localSmsReport);
+          setSelectedDisaster(button.id);
+          setLatestReport({
+            disasterLabel: button.label,
+            barangay: safeBarangay,
+            latitude: location.lat,
+            longitude: location.lng,
+            deliveryMethod: "sms",
+          });
+          setOverlayVisible(true);
+          return;
+        } catch (smsError) {
+          Alert.alert("SMS fallback failed", smsError instanceof Error ? smsError.message : "Could not send the offline SMS report.");
+          return;
+        }
+      }
+
       Alert.alert("Report failed", error instanceof Error ? error.message : "Could not send the report.");
     } finally {
       setSubmittingId(null);
     }
+  }
+
+  function confirmReport(button: DisasterButton) {
+    if (!location) {
+      Alert.alert("Location unavailable", "Please wait for the GPS capture to finish, then try again.");
+      return;
+    }
+
+    Alert.alert(
+      `Report ${button.label}?`,
+      "This will send your current location to ResQ. If the backend is unreachable, Android will switch to SMS fallback automatically.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm report",
+          style: "default",
+          onPress: () => {
+            void submitReport(button);
+          },
+        },
+      ],
+    );
   }
 
   return (
@@ -86,8 +158,8 @@ export default function Index() {
             onBarangayChange={setBarangay}
           />
           <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 16, marginTop: 4 }}>
-            <Text style={{ color: "#FFDBDB", fontSize: 16, fontWeight: "bold" }}>Network: Connected </Text>
-            <Text style={{ color: "#FAFEC0", fontSize: 16, fontWeight: "bold" }}>(API / SMS ready)</Text>
+            <Text style={{ color: "#FFDBDB", fontSize: 16, fontWeight: "bold" }}>Report mode: </Text>
+            <Text style={{ color: "#FAFEC0", fontSize: 16, fontWeight: "bold" }}>API first, offline SMS fallback</Text>
           </View>
         </View>
         <View style={homeStyle.disasterGridContainer}>
@@ -96,7 +168,7 @@ export default function Index() {
               <TouchableOpacity
                 key={button.id}
                 style={homeStyle.disasterButton}
-                onPress={() => submitReport(button)}
+                onPress={() => confirmReport(button)}
                 activeOpacity={0.85}
                 disabled={submittingId !== null}
               >
