@@ -1,9 +1,11 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getStoredUser, loginStaff, saveSession, type BackendUser } from "@/lib/api";
 
 export default function HomePage() {
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
@@ -25,6 +27,7 @@ export default function HomePage() {
       saveSession(response.token, response.user, rememberMe);
       setCurrentUser(response.user);
       setPassword("");
+      router.push("/dashboard");
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Could not log in.");
     } finally {
@@ -54,14 +57,14 @@ export default function HomePage() {
         <form onSubmit={handleSubmit} className="app-auth-form">
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-200" htmlFor="phone-number">
-              Phone Number
+              Username
             </label>
             <input
               id="phone-number"
               value={phoneNumber}
               onChange={(event) => setPhoneNumber(event.target.value)}
               className="w-full rounded-lg border border-white/15 bg-[#24374f] px-4 py-3 text-white outline-none focus:border-sky-400"
-              placeholder="09123456789"
+              placeholder="admin"
             />
           </div>
 
@@ -75,7 +78,7 @@ export default function HomePage() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               className="w-full rounded-lg border border-white/15 bg-[#24374f] px-4 py-3 text-white outline-none focus:border-sky-400"
-              placeholder="Enter password"
+              placeholder="1234"
             />
           </div>
 

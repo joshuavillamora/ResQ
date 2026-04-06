@@ -1,6 +1,5 @@
 import "./globals.css";
-import Sidebar from "./components/Sidebar";
-import UniversalHeader from "./components/UniversalHeader";
+import AppShell from "./components/AppShell";
 
 export const metadata = {
   title: "ResQ - Admin Portal",
@@ -32,13 +31,7 @@ export default function RootLayout({
             `,
           }}
         />
-        <div className="app-shell">
-          <Sidebar />
-          <main className="app-main">
-            <UniversalHeader />
-            {children}
-          </main>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

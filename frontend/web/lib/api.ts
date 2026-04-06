@@ -409,7 +409,11 @@ export async function fetchReports(filters?: {
 
 export async function loginStaff(phoneNumber: string, password: string): Promise<LoginResponse> {
   if (!phoneNumber || !password) {
-    throw new Error("Phone number and password are required");
+    throw new Error("Username and password are required");
+  }
+
+  if (phoneNumber !== "admin" || password !== "1234") {
+    throw new Error("Invalid credentials. Use username admin and password 1234.");
   }
 
   await delay(300);
