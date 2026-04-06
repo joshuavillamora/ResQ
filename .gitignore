@@ -1,0 +1,58 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg
+
+# Node / JS
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Expo / React Native
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+/ios
+/android
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.metro-health-check*
+
+# Next.js / React web
+.next/
+/out/
+next-env.d.ts
+/build
+
+# Env
+.env*
+.env*.local
+
+# Logs
+npm-debug.*
+npm-debug.log*
+yarn-debug.*
+yarn-debug.log*
+yarn-error.*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS / Misc
+.DS_Store
+*.pem
+*.tsbuildinfo
+
+# Examples / generated
+app-example
