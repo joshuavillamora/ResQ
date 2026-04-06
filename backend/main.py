@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import secrets
 import time
 from datetime import datetime, timedelta
@@ -12,6 +13,7 @@ from urllib.parse import parse_qs
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 
 try:
@@ -28,6 +30,23 @@ except ImportError:
 app = FastAPI(title="ResQ Backend")
 
 models.Base.metadata.create_all(bind=engine)
+
+
+def ensure_report_columns():
+    inspector = inspect(engine)
+    if "reports" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("reports")}
+
+    with engine.begin() as connection:
+        if "sms_sender_code" not in columns:
+            connection.execute(text("ALTER TABLE reports ADD COLUMN sms_sender_code VARCHAR(255)"))
+        if "client_report_id" not in columns:
+            connection.execute(text("ALTER TABLE reports ADD COLUMN client_report_id VARCHAR(255)"))
+
+
+ensure_report_columns()
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,6 +76,7 @@ ALLOWED_SEVERITY = {"low", "medium", "high"}
 STAFF_ROLES = {"responder", "station_admin"}
 ALLOWED_REPORT_STATUSES = {"unverified", "verified", "responding", "resolved", "false_report"}
 ALLOWED_SOURCES = {"api", "sms"}
+SENDER_CODE_PATTERN = re.compile(r"^(user|guest)_[a-z0-9][a-z0-9_-]*$")
 
 
 class ConnectionManager:
@@ -169,6 +189,14 @@ def clean_required_text(value: str, field_name: str) -> str:
     return clean_value
 
 
+def clean_optional_text(value: Optional[str]) -> Optional[str]:
+    if value is None:
+        return None
+
+    clean_value = value.strip()
+    return clean_value or None
+
+
 def normalize_status(report_status: str) -> str:
     clean_value = report_status.strip().lower().replace(" ", "_")
     if clean_value not in ALLOWED_REPORT_STATUSES:
@@ -188,6 +216,30 @@ def validate_coordinates(latitude: float, longitude: float):
         raise HTTPException(status_code=400, detail="Latitude must be between -90 and 90")
     if longitude < -180 or longitude > 180:
         raise HTTPException(status_code=400, detail="Longitude must be between -180 and 180")
+
+
+def normalize_sender_code(sender_code: Optional[str]) -> Optional[str]:
+    clean_value = clean_optional_text(sender_code)
+    if not clean_value:
+        return None
+
+    clean_value = clean_value.lower()
+    if not SENDER_CODE_PATTERN.match(clean_value):
+        raise HTTPException(status_code=400, detail="Invalid sms sender code")
+
+    return clean_value
+
+
+def resolve_api_sender_code(current_user: Optional[models.User], sender_code: Optional[str]) -> Optional[str]:
+    normalized_sender_code = normalize_sender_code(sender_code)
+
+    if current_user:
+        return f"user_{current_user.id}"
+
+    if normalized_sender_code and normalized_sender_code.startswith("user_"):
+        raise HTTPException(status_code=400, detail="Guest reports cannot claim a user sms sender code")
+
+    return normalized_sender_code
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -272,6 +324,8 @@ def report_to_dict(
     data = {
         "id": report.id,
         "user_id": report.user_id,
+        "sms_sender_code": report.sms_sender_code,
+        "client_report_id": report.client_report_id,
         "disaster_type": report.disaster_type,
         "latitude": report.latitude,
         "longitude": report.longitude,
@@ -384,6 +438,63 @@ def can_edit_report(report: models.Report, current_user: Optional[models.User], 
     return False
 
 
+def get_existing_report_by_client_id(db: Session, client_report_id: Optional[str]) -> Optional[models.Report]:
+    clean_value = clean_optional_text(client_report_id)
+    if not clean_value:
+        return None
+
+    return db.query(models.Report).filter(models.Report.client_report_id == clean_value).first()
+
+
+def can_return_duplicate_edit_token(
+    report: models.Report,
+    current_user: Optional[models.User],
+    sms_sender_code: Optional[str],
+) -> bool:
+    if current_user and current_user.role in STAFF_ROLES:
+        return True
+
+    if current_user and report.user_id == current_user.id:
+        return True
+
+    if (
+        not current_user
+        and report.user_id is None
+        and report.client_report_id
+        and sms_sender_code
+        and report.sms_sender_code == sms_sender_code
+    ):
+        return True
+
+    return False
+
+
+def resolve_sms_sender(sender_code: Optional[str], user_id: Optional[int], db: Session) -> tuple[Optional[int], Optional[str]]:
+    normalized_sender_code = normalize_sender_code(sender_code)
+
+    if normalized_sender_code and normalized_sender_code.startswith("user_"):
+        try:
+            parsed_user_id = int(normalized_sender_code.split("_", 1)[1])
+        except ValueError:
+            parsed_user_id = None
+
+        if parsed_user_id is not None:
+            existing_user = db.query(models.User).filter(models.User.id == parsed_user_id).first()
+            if existing_user:
+                return existing_user.id, normalized_sender_code
+            return None, normalized_sender_code
+
+    if normalized_sender_code:
+        return None, normalized_sender_code
+
+    if user_id is not None:
+        existing_user = db.query(models.User).filter(models.User.id == user_id).first()
+        if existing_user:
+            return existing_user.id, f"user_{existing_user.id}"
+
+    return None, None
+
+
 @app.get("/")
 def root():
     return {"message": "ResQ backend is running"}
@@ -456,9 +567,20 @@ async def create_report(
     disaster_type = normalize_disaster_type(report.disaster_type)
     validate_coordinates(report.latitude, report.longitude)
     barangay = clean_required_text(report.barangay, "barangay")
+    client_report_id = clean_optional_text(report.client_report_id)
+    sms_sender_code = resolve_api_sender_code(current_user, report.sms_sender_code)
+
+    existing_report = get_existing_report_by_client_id(db, client_report_id)
+    if existing_report:
+        return report_to_dict(
+            existing_report,
+            include_edit_token=can_return_duplicate_edit_token(existing_report, current_user, sms_sender_code),
+        )
 
     new_report = models.Report(
         user_id=current_user.id if current_user else None,
+        sms_sender_code=sms_sender_code,
+        client_report_id=client_report_id,
         disaster_type=disaster_type,
         latitude=report.latitude,
         longitude=report.longitude,
@@ -610,15 +732,18 @@ async def create_sms_report(request: Request, db: Session = Depends(get_db)):
 
     disaster_type = normalize_disaster_type(parsed_sms["disaster_type"])
     validate_coordinates(parsed_sms["latitude"], parsed_sms["longitude"])
+    client_report_id = clean_optional_text(parsed_sms.get("client_report_id"))
 
-    user_id = parsed_sms["user_id"]
-    if user_id:
-        existing_user = db.query(models.User).filter(models.User.id == user_id).first()
-        if not existing_user:
-            raise HTTPException(status_code=404, detail="SMS user not found")
+    existing_report = get_existing_report_by_client_id(db, client_report_id)
+    if existing_report:
+        return report_to_dict(existing_report)
+
+    user_id, sender_code = resolve_sms_sender(parsed_sms.get("sender_code"), parsed_sms.get("user_id"), db)
 
     new_report = models.Report(
         user_id=user_id,
+        sms_sender_code=sender_code,
+        client_report_id=client_report_id,
         disaster_type=disaster_type,
         latitude=parsed_sms["latitude"],
         longitude=parsed_sms["longitude"],
@@ -634,7 +759,7 @@ async def create_sms_report(request: Request, db: Session = Depends(get_db)):
     refresh_confidence_for_same_type(db, disaster_type)
     db.refresh(new_report)
 
-    report_data = report_to_dict(new_report, include_edit_token=True)
+    report_data = report_to_dict(new_report)
     await manager.broadcast_json({"event": "report_created", "report": report_data})
 
     return report_data
