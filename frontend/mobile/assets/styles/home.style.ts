@@ -47,7 +47,6 @@ export const createHomeStyles = (colors: ColorScheme) => {
 
     },
     menuAnchor: {
-      marginTop: 18,
       marginRight: 12,
       justifyContent: "center",
       alignItems: "center",
