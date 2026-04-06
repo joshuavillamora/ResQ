@@ -121,7 +121,7 @@ export default function LocationCapture({
       >
         <Image source={require('@/assets/images/map-pin.png')} style={{ width: 20, height: 22 }} />
         <Text style={{ color: "#FFDBDB", fontWeight: "bold", fontSize: 16, marginLeft: 3 }}>
-          {barangay || "Barangay / Area name (auto-detected)"}
+          {barangay || "Barangay / Area name"}
         </Text>
       </View>
     </View>
