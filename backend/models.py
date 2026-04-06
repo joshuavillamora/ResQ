@@ -28,6 +28,8 @@ class Report(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    sms_sender_code = Column(String, nullable=True, index=True)
+    client_report_id = Column(String, nullable=True, index=True)
     disaster_type = Column(String, nullable=False, index=True)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)

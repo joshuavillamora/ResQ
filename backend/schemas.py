@@ -20,6 +20,8 @@ class ReportCreate(BaseModel):
     latitude: float
     longitude: float
     barangay: str
+    client_report_id: Optional[str] = None
+    sms_sender_code: Optional[str] = None
 
 # -------------------- Update Report --------------------
 class ReportUpdate(BaseModel):
