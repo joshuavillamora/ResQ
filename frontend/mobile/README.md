@@ -1,50 +1,39 @@
-# Welcome to your Expo app 👋
+# ResQ Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Development
 
-## Get started
-
-1. Install dependencies
+1. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Use an Android development build or APK for the offline SMS fallback.
+   Expo Go does not include the native SMS module.
+
+3. Start the app:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## Offline SMS fallback
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+The app now uses this report flow on Android:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+1. Capture the user's current location on app open.
+2. Try `POST /report` first.
+3. If the backend is unreachable, send a silent SMS fallback from the app itself.
 
-## Get a fresh project
+Configure these values in [`app.json`](/C:/Users/TUF/ResQ/frontend/mobile/app.json):
 
-When you're ready, run:
+- `expo.extra.resqApiBaseUrl`
+- `expo.extra.resqSmsEnabled`
+- `expo.extra.resqSmsFallbackNumber`
 
-```bash
-npm run reset-project
+The SMS payload format is:
+
+```text
+FLOOD|user_12|10.721200|122.562100|Barangay San Jose|report_abcd1234
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
